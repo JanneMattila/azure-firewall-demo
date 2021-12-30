@@ -12,7 +12,8 @@
 			"redhat.vscode-yaml",
 			"ms-kubernetes-tools.vscode-kubernetes-tools",
 			"mads-hartmann.bash-ide-vscode",
-			"ms-azuretools.vscode-bicep"
+			"ms-azuretools.vscode-bicep",
+			"ms-vscode.powershell"
 		]
 	}
 }
