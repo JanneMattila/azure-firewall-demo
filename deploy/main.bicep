@@ -7,4 +7,13 @@ module virtualNetworks 'network/virtual-networks.bicep' = {
   }
 }
 
+module firewall 'firewall/deploy.bicep' = {
+  name: 'firewall-resources-deployment'
+  params: {
+    firewallSubnetId: virtualNetworks.outputs.firewallSubnetId
+    location: location
+  }
+}
+
 output virtualNetworks object = virtualNetworks
+output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
