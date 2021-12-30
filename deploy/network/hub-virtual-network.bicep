@@ -33,4 +33,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-output virtualNetwork object = virtualNetwork
+output id string = virtualNetwork.id
+output name string = virtualNetwork.name
+output firewallSubnetId string = virtualNetwork.properties.subnets[1].id
