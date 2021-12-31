@@ -7,7 +7,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        '10.0.0.0/22'
+        '10.0.0.0/21'
       ]
     }
     subnets: [

@@ -66,6 +66,15 @@ module spoke001VirtualNetwork 'spoke-virtual-network.bicep' = {
   ]
 }
 
+module aciSpoke001 'container-instances.bicep' = {
+  name: '${spoke001Name}-aci-deployment'
+  params: {
+    name: 'ci-${spoke001}'
+    location: location
+    subnetId: spoke001VirtualNetwork.outputs.subnetId
+  }
+}
+
 module spoke002VirtualNetwork 'spoke-virtual-network.bicep' = {
   name: '${spoke002Name}-deployment'
   params: {
@@ -82,6 +91,15 @@ module spoke002VirtualNetwork 'spoke-virtual-network.bicep' = {
   ]
 }
 
+module aciSpoke002 'container-instances.bicep' = {
+  name: '${spoke002Name}-aci-deployment'
+  params: {
+    name: 'ci-${spoke002}'
+    location: location
+    subnetId: spoke002VirtualNetwork.outputs.subnetId
+  }
+}
+
 module spoke003VirtualNetwork 'spoke-virtual-network.bicep' = {
   name: '${spoke003Name}-deployment'
   params: {
@@ -96,6 +114,15 @@ module spoke003VirtualNetwork 'spoke-virtual-network.bicep' = {
   dependsOn: [
     vpn
   ]
+}
+
+module aciSpoke003 'container-instances.bicep' = {
+  name: '${spoke003Name}-aci-deployment'
+  params: {
+    name: 'ci-${spoke003}'
+    location: location
+    subnetId: spoke003VirtualNetwork.outputs.subnetId
+  }
 }
 
 output firewallSubnetId string = hubVirtualNetwork.outputs.firewallSubnetId
