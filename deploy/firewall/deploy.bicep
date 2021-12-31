@@ -5,9 +5,9 @@ param firewallSubnetId string
 module firewallPolicy 'firewall-policy.bicep' = {
   name: 'firewallPolicy-deployment'
   params: {
-    location: location
     name: 'afwp-hub'
     tier: 'Standard'
+    location: location
   }
 }
 
@@ -15,6 +15,7 @@ module publicIp 'public-ip.bicep' = {
   name: 'firewall-pip-deployment'
   params: {
     name: 'pip-firewall'
+    location: location
   }
 }
 
@@ -22,7 +23,6 @@ module firewall 'firewall.bicep' = {
   name: 'firewall-deployment'
   params: {
     name: name
-    location: location
     skuName: 'AZFW_VNet'
     skuTier: 'Standard'
     firewallPolicyId: firewallPolicy.outputs.id
@@ -30,6 +30,7 @@ module firewall 'firewall.bicep' = {
       publicIp: publicIp.outputs.id
       subnet: firewallSubnetId
     }
+    location: location
   }
 }
 

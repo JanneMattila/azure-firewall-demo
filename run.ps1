@@ -9,12 +9,17 @@
 
 # Run deployment
 Set-Location .\deploy\
-.\deploy.ps1
-# Few notes: 
+Measure-Command -Expression { 
+    .\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo"
+} | Format-Table
+
+# Few notes about deployment:
 # - Same deployment can be executed in pipeline
 #   by Azure AD Service Principal
 # - Deployment takes roughly nn minutes
 #
+
+# TO BE ADDED: Add VMs to "snet-management" subnet.
 
 ##################################
 #  ____  _

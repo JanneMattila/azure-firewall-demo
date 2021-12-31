@@ -1,4 +1,5 @@
 param name string
+param tag string
 param hubName string
 param hubId string
 param vnetAddressSpace string
@@ -8,6 +9,9 @@ param location string = resourceGroup().location
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name
   location: location
+  tags: {
+    'azfw-mapping': tag
+  }
   properties: {
     addressSpace: {
       addressPrefixes: [
@@ -31,7 +35,7 @@ resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
     allowGatewayTransit: true
-    useRemoteGateways: false // We don't have gateways in this demo
+    useRemoteGateways: true
     remoteVirtualNetwork: {
       id: hubId
     }

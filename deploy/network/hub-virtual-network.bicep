@@ -24,9 +24,23 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         }
       }
       {
+        // For intrastructure resources e.g., DCs
         name: 'snet-infra'
         properties: {
           addressPrefix: '10.0.2.0/24'
+        }
+      }
+      {
+        // For our demo management subnet to host our VMs
+        name: 'snet-management'
+        properties: {
+          addressPrefix: '10.0.3.0/24'
+        }
+      }
+      {
+        name: 'AzureBastionSubnet'
+        properties: {
+          addressPrefix: '10.0.4.0/24'
         }
       }
     ]
@@ -35,4 +49,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 
 output id string = virtualNetwork.id
 output name string = virtualNetwork.name
+output gatewaySubnetId string = virtualNetwork.properties.subnets[0].id
 output firewallSubnetId string = virtualNetwork.properties.subnets[1].id
+output bastionSubnetId string = virtualNetwork.properties.subnets[4].id

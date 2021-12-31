@@ -1,5 +1,5 @@
 param name string
-param location string = resourceGroup().location
+param location string
 
 resource publicIPAddress 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   name: name

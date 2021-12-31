@@ -21,4 +21,11 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2021-05-01' = {
   }
 }
 
+module ruleCollectionGroups 'rulecollectiongroups/deploy.bicep' = {
+  name: 'ruleCollectionGroups-deployment'
+  params: {
+    parentName: firewallPolicy.name
+  }
+}
+
 output id string = firewallPolicy.id
