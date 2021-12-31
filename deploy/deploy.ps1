@@ -5,6 +5,12 @@ Param (
     [Parameter(HelpMessage = "Deployment target resource group location")] 
     [string] $Location = "North Europe",
 
+    [Parameter(HelpMessage = "Management VM username")] 
+    [string] $Username = "jumpboxuser",
+
+    [Parameter(HelpMessage = "Management VM password")] 
+    [securestring] $Password,
+
     [string] $Template = "$PSScriptRoot\main.bicep",
     [string] $TemplateParameters = "$PSScriptRoot\azuredeploy.parameters.json"
 )
@@ -34,7 +40,8 @@ if ($null -eq (Get-AzResourceGroup -Name $ResourceGroupName -Location $Location 
 
 # Additional parameters that we pass to the template deployment
 $additionalParameters = New-Object -TypeName hashtable
-#$additionalParameters['templateUrl'] = $templateUrl
+$additionalParameters['username'] = $Username
+$additionalParameters['password'] = $Password
 
 $result = New-AzResourceGroupDeployment `
     -DeploymentName $deploymentName `

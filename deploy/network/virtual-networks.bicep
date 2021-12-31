@@ -1,4 +1,7 @@
 param location string
+param username string
+@secure()
+param password string
 
 var hubName = 'vnet-hub'
 var spoke001 = 'vnet-spoke001'
@@ -33,6 +36,17 @@ module bastion 'bastion.bicep' = {
     name: 'bas-management'
     location: location
     subnetId: hubVirtualNetwork.outputs.bastionSubnetId
+  }
+}
+
+module jumpbox 'jumpbox.bicep' = {
+  name: 'jumpbox-deployment'
+  params: {
+    name: 'jumpbox'
+    username: username
+    password: password
+    location: location
+    subnetId: hubVirtualNetwork.outputs.managementSubnetId
   }
 }
 

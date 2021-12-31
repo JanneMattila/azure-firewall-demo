@@ -51,4 +51,5 @@ output id string = virtualNetwork.id
 output name string = virtualNetwork.name
 output gatewaySubnetId string = virtualNetwork.properties.subnets[0].id
 output firewallSubnetId string = virtualNetwork.properties.subnets[1].id
+output managementSubnetId string = virtualNetwork.properties.subnets[3].id
 output bastionSubnetId string = virtualNetwork.properties.subnets[4].id

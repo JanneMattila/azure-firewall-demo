@@ -26,6 +26,7 @@ Azure Firewall demo
 To optimize costs some resource pricing tier decisions has been made:
 
 - VPN Gateway is `Generation1` and `VpnGw1AZ`
+- Jumpbox Ubuntu VM `Standard_B2s`
 - Estimated cost of demo environment: *nnn* EUR, *nnn* USD per day
 
 ## Deployment

@@ -1,8 +1,13 @@
+param username string
+@secure()
+param password string
 param location string = resourceGroup().location
 
 module virtualNetworks 'network/virtual-networks.bicep' = {
   name: 'virtual-networks-deployment'
   params: {
+    username: username
+    password: password
     location: location
   }
 }

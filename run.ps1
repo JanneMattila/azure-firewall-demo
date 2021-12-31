@@ -9,8 +9,13 @@
 
 # Run deployment
 Set-Location .\deploy\
+$username = "jumpboxuser"
+$password = ConvertTo-SecureString -String New-Guid -AsPlainText
 Measure-Command -Expression { 
-    .\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo"
+    .\deploy.ps1 `
+        -Username $username `
+        -Password $password `
+        -ResourceGroupName "rg-azure-firewall-demo"
 } | Format-Table
 
 # Few notes about deployment:
