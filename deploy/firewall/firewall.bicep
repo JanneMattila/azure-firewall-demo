@@ -44,4 +44,13 @@ resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
   }
 }
 
+module diagnosticSettings 'log-analytics.bicep' = {
+  name: 'firewall-diagnosticSettings-deployment'
+  params: {
+    name: 'diag-${firewall.name}'
+    parentName: firewall.name
+    location: location
+  }
+}
+
 output privateIPAddress string = firewall.properties.ipConfigurations[0].properties.privateIPAddress
