@@ -23,7 +23,16 @@ module vpn 'vpn.bicep' = {
   params: {
     name: 'vgw-vpn'
     location: location
-    vpnSubnetId: hubVirtualNetwork.outputs.gatewaySubnetId
+    subnetId: hubVirtualNetwork.outputs.gatewaySubnetId
+  }
+}
+
+module bastion 'bastion.bicep' = {
+  name: 'bastion-deployment'
+  params: {
+    name: 'bas-management'
+    location: location
+    subnetId: hubVirtualNetwork.outputs.bastionSubnetId
   }
 }
 

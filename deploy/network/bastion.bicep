@@ -3,7 +3,7 @@ param location string
 param subnetId string
 
 resource publicIPAddress 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
-  name: 'pip-vpn'
+  name: 'pip-bastion'
   location: location
   sku: {
     name: 'Standard'
@@ -13,13 +13,16 @@ resource publicIPAddress 'Microsoft.Network/publicIPAddresses@2019-11-01' = {
   }
 }
 
-resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11-01' = {
+resource bastion 'Microsoft.Network/bastionHosts@2021-05-01' = {
   name: name
   location: location
+  sku: {
+    name: 'Standard'
+  }
   properties: {
     ipConfigurations: [
       {
-        name: 'vpn-pip1'
+        name: 'bastion-pip1'
         properties: {
           privateIPAllocationMethod: 'Dynamic'
           subnet: {
@@ -31,18 +34,5 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
         }
       }
     ]
-    sku: {
-      name: 'VpnGw1AZ'
-      tier: 'VpnGw1AZ'
-    }
-    activeActive: false
-    enableBgp: true
-    vpnType: 'RouteBased'
-    vpnGatewayGeneration: 'Generation1'
-
-    // Other properties to evaluate:
-    // bgpSettings: {
-    //   asn: asn
-    // }
   }
 }
