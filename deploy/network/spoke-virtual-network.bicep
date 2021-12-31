@@ -34,7 +34,6 @@ resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true
-    allowGatewayTransit: true
     useRemoteGateways: true
     remoteVirtualNetwork: {
       id: hubId
@@ -46,6 +45,7 @@ resource HubToSpokePeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
   name: '${hubName}/hub-to-${name}'
   properties: {
     allowVirtualNetworkAccess: true
+    allowGatewayTransit: true
     remoteVirtualNetwork: {
       id: virtualNetwork.id
     }

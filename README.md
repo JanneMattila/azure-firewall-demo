@@ -5,7 +5,7 @@ Azure Firewall demo
 ### In-Scope
 
 - Quickly deploy Azure Firewall environment
-  - ~10 minutes
+  - ~30-60 minutes
   - You can deploy multiple ones to separate resource groups
     - `.\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo1"`
     - `.\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo2"`
@@ -27,7 +27,7 @@ To optimize costs some resource pricing tier decisions has been made:
 
 - VPN Gateway is `Generation1` and `VpnGw1AZ`
 - Jumpbox Ubuntu VM `Standard_B2s`
-- Estimated cost of demo environment: *nnn* EUR, *nnn* USD per day
+- Estimated cost of demo environment: `< 20 EUR, < 20 USD per day`
 
 ## Deployment
 

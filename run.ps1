@@ -10,7 +10,9 @@
 # Run deployment
 Set-Location .\deploy\
 $username = "jumpboxuser"
-$password = ConvertTo-SecureString -String New-Guid -AsPlainText
+$plainTextPassword = New-Guid
+$plainTextPassword
+$password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
 Measure-Command -Expression { 
     .\deploy.ps1 `
         -Username $username `

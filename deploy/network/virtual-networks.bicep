@@ -51,7 +51,7 @@ module jumpbox 'jumpbox.bicep' = {
 }
 
 module spoke001VirtualNetwork 'spoke-virtual-network.bicep' = {
-  name: '${spoke001Name}-deployment'
+  name: '${spoke001}-deployment'
   params: {
     name: spoke001Name
     tag: spoke001
@@ -67,7 +67,7 @@ module spoke001VirtualNetwork 'spoke-virtual-network.bicep' = {
 }
 
 module aciSpoke001 'container-instances.bicep' = {
-  name: '${spoke001Name}-aci-deployment'
+  name: '${spoke001}-aci-deployment'
   params: {
     name: 'ci-${spoke001}'
     location: location
@@ -76,7 +76,7 @@ module aciSpoke001 'container-instances.bicep' = {
 }
 
 module spoke002VirtualNetwork 'spoke-virtual-network.bicep' = {
-  name: '${spoke002Name}-deployment'
+  name: '${spoke002}-deployment'
   params: {
     name: spoke002Name
     tag: spoke002
@@ -92,7 +92,7 @@ module spoke002VirtualNetwork 'spoke-virtual-network.bicep' = {
 }
 
 module aciSpoke002 'container-instances.bicep' = {
-  name: '${spoke002Name}-aci-deployment'
+  name: '${spoke002}-aci-deployment'
   params: {
     name: 'ci-${spoke002}'
     location: location
@@ -101,7 +101,7 @@ module aciSpoke002 'container-instances.bicep' = {
 }
 
 module spoke003VirtualNetwork 'spoke-virtual-network.bicep' = {
-  name: '${spoke003Name}-deployment'
+  name: '${spoke003}-deployment'
   params: {
     name: spoke003Name
     tag: spoke003
@@ -117,7 +117,7 @@ module spoke003VirtualNetwork 'spoke-virtual-network.bicep' = {
 }
 
 module aciSpoke003 'container-instances.bicep' = {
-  name: '${spoke003Name}-aci-deployment'
+  name: '${spoke003}-aci-deployment'
   params: {
     name: 'ci-${spoke003}'
     location: location

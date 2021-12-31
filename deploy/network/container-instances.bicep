@@ -2,13 +2,10 @@ param name string
 param subnetId string
 param location string
 
-resource aci 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
+resource aci 'Microsoft.ContainerInstance/containerGroups@2021-09-01' = {
   name: name
   location: location
   properties: {
-    networkProfile: {
-      id: subnetId
-    }
     containers: [
       {
         name: 'webapp-network-tester'
@@ -31,7 +28,7 @@ resource aci 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
     restartPolicy: 'OnFailure'
     osType: 'Linux'
     ipAddress: {
-      type: 'Public'
+      type: 'Private'
       ports: [
         {
           protocol: 'TCP'
@@ -39,5 +36,10 @@ resource aci 'Microsoft.ContainerInstance/containerGroups@2021-03-01' = {
         }
       ]
     }
+    subnetIds: [
+      {
+        id: subnetId
+      }
+    ]
   }
 }
