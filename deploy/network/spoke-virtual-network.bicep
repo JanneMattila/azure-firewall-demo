@@ -23,6 +23,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'snet-front'
         properties: {
           addressPrefix: subnetAddressSpace
+          delegations: [
+            {
+              name: 'ACIDelegation'
+              properties: {
+                serviceName: 'Microsoft.ContainerInstance/containerGroups'
+              }
+            }
+          ]
         }
       }
     ]
