@@ -5,16 +5,18 @@ Azure Firewall demo
 ### In-Scope
 
 - Quickly deploy Azure Firewall environment
-  - ~30-60 minutes
+  - Initial deployment ~30-40 minutes and incremental deployments ~15-20 minutes 
   - You can deploy multiple ones to separate resource groups
     - `.\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo1"`
     - `.\deploy.ps1 -ResourceGroupName "rg-azure-firewall-demo2"`
 - Learn how to structure firewall rules (and rule collection groups and policies)
 - Quickly test your firewall configuration with deployed helper apps
 - Provide ideas, how can you split responsibilities of firewall management
-  - Centralized team to manage higher level rules e.g., `common`, `vnet` and `on-premises`
-  - Enable other people to participate e.g., update `spoke` specific rule
+  - Centralized team to manage higher level rules e.g., `Common`, `VNET` and `On-premises`
+  - Enable other people to participate e.g., update `Spoke-specific` rules
   - Normal development practices apply (pull request, code review, automated deployments, etc.)
+    - Configuration is stored in git and deployed using service principal
+    - End users don't need to have `Contributor` access to actual Azure Firewall resource
 
 ### Out-of-Scope
 
@@ -27,13 +29,12 @@ To optimize costs some resource pricing tier decisions has been made:
 
 - VPN Gateway is `Generation1` and `VpnGw1AZ`
 - Jumpbox Ubuntu VM `Standard_B2s`
-- Estimated cost of demo environment: `< 20 EUR, < 20 USD per day`
+- Estimated cost of demo environment: `< 20 EUR, < 20 USD per work day`
 
-## Deployment
+## Usage
 
-```powershell
-.\deploy\deploy.ps1
-```
+Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment.
+
 
 ## Links
 
