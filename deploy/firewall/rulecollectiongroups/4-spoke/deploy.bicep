@@ -11,22 +11,57 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
     priority: 1000
     ruleCollections: [
       {
-        name: 'spokes001'
+        name: 'Allow-Spoke001-To-Internet-Application-Rules'
         priority: 1000
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
           type: 'Allow'
         }
-        rules: []
+        rules: [
+          {
+            ruleType: 'ApplicationRule'
+            name: 'Spoke001 to bing.com'
+            description: 'Allow spoke001 to connect to bing.com'
+            sourceAddresses: [
+              '10.1.0.0/22'
+            ]
+            targetFqdns: [
+              'bing.com'
+            ]
+          }
+          {
+            ruleType: 'ApplicationRule'
+            name: 'Spoke001 to docs.microsoft.com'
+            description: 'Allow spoke001 to connect to docs.microsoft.com'
+            sourceAddresses: [
+              '10.1.0.0/22'
+            ]
+            targetFqdns: [
+              'docs.microsoft.com'
+            ]
+          }
+        ]
       }
       {
-        name: 'spokes002'
-        priority: 1001
+        name: 'Deny-Spoke002-To-Internet-Application-Rules'
+        priority: 1011
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
-          type: 'Allow'
+          type: 'Deny'
         }
-        rules: []
+        rules: [
+          {
+            ruleType: 'ApplicationRule'
+            name: 'Spoke002 to www.microsoft.com'
+            description: 'Deny spoke003 to connect to www.microsoft.com'
+            sourceAddresses: [
+              '10.3.0.0/22'
+            ]
+            targetFqdns: [
+              'www.microsoft.com'
+            ]
+          }
+        ]
       }
     ]
   }
