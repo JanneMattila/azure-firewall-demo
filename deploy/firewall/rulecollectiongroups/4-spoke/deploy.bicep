@@ -42,6 +42,12 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             sourceAddresses: [
               '10.1.0.0/22'
             ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
             targetFqdns: [
               'docs.microsoft.com'
             ]

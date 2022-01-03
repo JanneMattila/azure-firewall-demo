@@ -50,8 +50,8 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'On-premises to spoke001 using http'
-            description: 'Allow on-premises network to connect to spoke001 using http on port 80'
+            name: 'On-premises to spoke001 ACI using http'
+            description: 'Allow on-premises network to connect to Azure Container Instance deployed to spoke001 using http on port 80'
             sourceAddresses: [
               '192.168.0.0/24'
             ]
@@ -61,8 +61,8 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
                 protocolType: 'Http'
               }
             ]
-            destinationAddresses: [
-              '10.1.0.0/22'
+            targetFqdns: [
+              '10.1.0.4'
             ]
           }
         ]

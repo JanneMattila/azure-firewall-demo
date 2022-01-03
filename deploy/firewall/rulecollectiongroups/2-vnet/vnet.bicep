@@ -11,6 +11,56 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
     priority: 200
     ruleCollections: [
       {
+        name: 'Allow-VNET-To-VNET-Network-Rules'
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        priority: 201
+        action: {
+          type: 'Allow'
+        }
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'Spoke001 to spoke002'
+            description: 'Allow spoke001 to spoke002 traffic'
+            ipProtocols: [
+              'Any'
+            ]
+            sourceAddresses: [
+              '10.1.0.0/22'
+            ]
+            sourceIpGroups: []
+            destinationAddresses: [
+              '10.2.0.0/22'
+            ]
+            destinationIpGroups: []
+            destinationFqdns: []
+            destinationPorts: [
+              '*'
+            ]
+          }
+          {
+            ruleType: 'NetworkRule'
+            name: 'Spoke002 to spoke001'
+            description: 'Allow spoke002 to spoke001 traffic'
+            ipProtocols: [
+              'Any'
+            ]
+            sourceAddresses: [
+              '10.2.0.0/22'
+            ]
+            sourceIpGroups: []
+            destinationAddresses: [
+              '10.1.0.0/22'
+            ]
+            destinationIpGroups: []
+            destinationFqdns: []
+            destinationPorts: [
+              '*'
+            ]
+          }
+        ]
+      }
+      {
         name: 'Allow-VNET-To-Internet-Application-Rules'
         priority: 202
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
@@ -95,56 +145,6 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
             ]
             targetFqdns: [
               '10.3.0.4'
-            ]
-          }
-        ]
-      }
-      {
-        name: 'Allow-VNET-To-VNET-Network-Rules'
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        priority: 204
-        action: {
-          type: 'Allow'
-        }
-        rules: [
-          {
-            ruleType: 'NetworkRule'
-            name: 'Spoke001 to spoke002'
-            description: 'Allow spoke001 to spoke002 traffic'
-            ipProtocols: [
-              'Any'
-            ]
-            sourceAddresses: [
-              '10.1.0.0/22'
-            ]
-            sourceIpGroups: []
-            destinationAddresses: [
-              '10.2.0.0/22'
-            ]
-            destinationIpGroups: []
-            destinationFqdns: []
-            destinationPorts: [
-              '*'
-            ]
-          }
-          {
-            ruleType: 'NetworkRule'
-            name: 'Spoke002 to spoke001'
-            description: 'Allow spoke002 to spoke001 traffic'
-            ipProtocols: [
-              'Any'
-            ]
-            sourceAddresses: [
-              '10.2.0.0/22'
-            ]
-            sourceIpGroups: []
-            destinationAddresses: [
-              '10.1.0.0/22'
-            ]
-            destinationIpGroups: []
-            destinationFqdns: []
-            destinationPorts: [
-              '*'
             ]
           }
         ]
