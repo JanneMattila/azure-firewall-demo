@@ -1,30 +1,76 @@
-param name string
 param parentName string
 
 resource parentFirewall 'Microsoft.Network/firewallPolicies@2021-05-01' existing = {
   name: parentName
 }
 
-module vnet_to_vnet 'vnet_to_vnet.bicep' = {
-  name: 'vnet_to_vnet-deployment'
-}
-
-// module vnet_to_internet 'vnet_to_internet.bicep' = {
-//   name: 'vnet_to_internet-deployment'
-//   params: {
-//     name: 'vnet_to_internet'
-//     parentName: parentFirewall.name
-//   }
-// }
-
 resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-11-01' = {
-  name: name
+  name: 'VNET'
   parent: parentFirewall
   properties: {
     priority: 200
     ruleCollections: [
-      vnet_to_vnet.outputs.vnet_to_internet
-      // vnet_to_internet.outputs.
+      {
+        name: 'vnet-to-internet'
+        priority: 202
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action: {
+          type: 'Allow'
+        }
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'Spoke001 to internet'
+            description: 'Allow spoke001 to connect to internet'
+            ipProtocols: [
+              'TCP'
+            ]
+            sourceAddresses: [
+              '10.1.0.0/22'
+            ]
+            sourceIpGroups: []
+            destinationAddresses: [
+              '*'
+            ]
+            destinationIpGroups: []
+            destinationFqdns: []
+            destinationPorts: [
+              '80'
+              '443'
+            ]
+          }
+        ]
+      }
+      {
+        name: 'vnet-to-vnet'
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        priority: 203
+        action: {
+          type: 'Allow'
+        }
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            name: 'Spoke002 to spoke001'
+            description: 'Allow spoke002 to spoke001 traffic'
+            ipProtocols: [
+              'Any'
+            ]
+            sourceAddresses: [
+              '10.2.0.0/22'
+            ]
+            sourceIpGroups: []
+            destinationAddresses: [
+              '10.1.0.0/22'
+            ]
+            destinationIpGroups: []
+            destinationFqdns: []
+            destinationPorts: [
+              '*'
+            ]
+          }
+        ]
+      }
     ]
   }
 }

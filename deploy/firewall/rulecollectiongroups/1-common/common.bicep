@@ -1,4 +1,3 @@
-param name string
 param parentName string
 
 resource parentFirewall 'Microsoft.Network/firewallPolicies@2021-05-01' existing = {
@@ -6,7 +5,7 @@ resource parentFirewall 'Microsoft.Network/firewallPolicies@2021-05-01' existing
 }
 
 resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-05-01' = {
-  name: name
+  name: 'Common'
   parent: parentFirewall
   properties: {
     priority: 100
