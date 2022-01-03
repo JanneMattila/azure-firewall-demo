@@ -64,7 +64,7 @@ be easier to manage:
 - `3-on-premises` contains rules specific to on-premises network connectivity
 - `4-spoke` contains rules that you need to implement as spoke specific
 
-Centralized firewall team to would maintain these rules:
+Centralized firewall team would maintain these rules:
 
 - `1-common`
 - `2-vnet`
@@ -122,6 +122,7 @@ No rule maintenance in portal should be done.
 
 1. Clone this repository to your own machine.
 2. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
+  - Execute different script steps one-by-one (hint: use [shift-enter](https://github.com/JanneMattila/some-questions-and-some-answers/blob/master/q%26a/vs_code.md#automation-tip-shift-enter))
 
 ## Try it yourself
 
