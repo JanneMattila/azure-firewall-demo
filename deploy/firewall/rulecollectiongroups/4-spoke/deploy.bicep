@@ -25,6 +25,12 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             sourceAddresses: [
               '10.1.0.0/22'
             ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
             targetFqdns: [
               'bing.com'
             ]
@@ -56,6 +62,12 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             description: 'Deny spoke003 to connect to www.microsoft.com'
             sourceAddresses: [
               '10.3.0.0/22'
+            ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
             ]
             targetFqdns: [
               'www.microsoft.com'

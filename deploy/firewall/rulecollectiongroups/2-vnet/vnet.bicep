@@ -25,6 +25,12 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
             sourceAddresses: [
               '10.1.0.0/22'
             ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
             targetFqdns: [
               'github.com'
             ]
@@ -36,6 +42,13 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
             sourceAddresses: [
               '10.3.0.0/22'
             ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
+
             targetFqdns: [
               'github.com'
             ]
@@ -46,6 +59,12 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
             description: 'Allow vnets to connect to www.microsoft.com'
             sourceAddresses: [
               '*'
+            ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
             ]
             targetFqdns: [
               'www.microsoft.com'
@@ -63,8 +82,8 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke001 to spoke003 using http'
-            description: 'Allow spoke001 to connect to spoke003 using http on port 80'
+            name: 'Spoke001 to spoke003 ACI using http'
+            description: 'Allow spoke001 to connect to Azure Container Instance deployed to spoke003 using http on port 80'
             sourceAddresses: [
               '10.1.0.0/22'
             ]
@@ -74,8 +93,8 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
                 protocolType: 'Http'
               }
             ]
-            destinationAddresses: [
-              '10.3.0.0/22'
+            targetFqdns: [
+              '10.3.0.4'
             ]
           }
         ]
