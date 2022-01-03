@@ -11,7 +11,7 @@ resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
     priority: 100
     ruleCollections: [
       {
-        name: 'Allow-Network-Rules'
+        name: 'Allow-Common-Network-Rules'
         priority: 101
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
@@ -43,7 +43,7 @@ resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
         ]
       }
       {
-        name: 'Allow-Application-Rules'
+        name: 'Allow-Common-Application-Rules'
         priority: 102
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {

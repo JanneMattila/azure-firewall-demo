@@ -5,7 +5,7 @@ resource parentFirewall 'Microsoft.Network/firewallPolicies@2021-05-01' existing
 }
 
 resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-11-01' = {
-  name: 'Spoke specific'
+  name: 'Spoke-specific'
   parent: parentFirewall
   properties: {
     priority: 1000
