@@ -1,6 +1,11 @@
 param name string
+param username string
+@secure()
+param password string
 param gatewaySubnetRouteTableId string
 param location string
+
+var bastionName = 'bas-management'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name
@@ -51,9 +56,45 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
+var gatewaySubnetId = virtualNetwork.properties.subnets[0].id
+var firewallSubnetId = virtualNetwork.properties.subnets[1].id
+var managementSubnetId = virtualNetwork.properties.subnets[3].id
+var bastionSubnetId = virtualNetwork.properties.subnets[4].id
+
+module vpn 'vpn.bicep' = {
+  name: 'vpn-deployment'
+  params: {
+    name: 'vgw-vpn'
+    location: location
+    subnetId: gatewaySubnetId
+  }
+}
+
+module bastion 'bastion.bicep' = {
+  name: 'bastion-deployment'
+  params: {
+    name: bastionName
+    location: location
+    subnetId: bastionSubnetId
+  }
+}
+
+module jumpbox 'jumpbox.bicep' = {
+  name: 'jumpbox-deployment'
+  params: {
+    name: 'jumpbox'
+    username: username
+    password: password
+    location: location
+    subnetId: managementSubnetId
+  }
+}
+
 output id string = virtualNetwork.id
 output name string = virtualNetwork.name
-output gatewaySubnetId string = virtualNetwork.properties.subnets[0].id
-output firewallSubnetId string = virtualNetwork.properties.subnets[1].id
-output managementSubnetId string = virtualNetwork.properties.subnets[3].id
-output bastionSubnetId string = virtualNetwork.properties.subnets[4].id
+output bastionName string = bastionName
+output gatewaySubnetId string = gatewaySubnetId
+output firewallSubnetId string = firewallSubnetId
+output managementSubnetId string = managementSubnetId
+output bastionSubnetId string = bastionSubnetId
+output virtualMachineResourceId string = jumpbox.outputs.virtualMachineResourceId

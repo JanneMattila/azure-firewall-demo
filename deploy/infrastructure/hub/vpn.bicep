@@ -46,3 +46,5 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2020-11
     // }
   }
 }
+
+output vpnResourceId string = virtualNetworkGateway.id

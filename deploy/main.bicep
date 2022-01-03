@@ -3,8 +3,8 @@ param username string
 param password string
 param location string = resourceGroup().location
 
-module virtualNetworks 'network/virtual-networks.bicep' = {
-  name: 'virtual-networks-deployment'
+module infrastructure 'infrastructure/deploy.bicep' = {
+  name: 'infra-deployment'
   params: {
     username: username
     password: password
@@ -15,12 +15,11 @@ module virtualNetworks 'network/virtual-networks.bicep' = {
 module firewall 'firewall/deploy.bicep' = {
   name: 'firewall-resources-deployment'
   params: {
-    firewallSubnetId: virtualNetworks.outputs.firewallSubnetId
+    firewallSubnetId: infrastructure.outputs.firewallSubnetId
     location: location
   }
 }
 
-output virtualNetworks object = virtualNetworks
 output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
-output bastionName string = virtualNetworks.outputs.bastionName
-output virtualMachineResourceId string = virtualNetworks.outputs.virtualMachineResourceId
+output bastionName string = infrastructure.outputs.bastionName
+output virtualMachineResourceId string = infrastructure.outputs.virtualMachineResourceId

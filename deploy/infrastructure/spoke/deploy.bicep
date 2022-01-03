@@ -1,16 +1,17 @@
-param name string
-param tag string
-param hubName string
-param hubId string
+param spokeName string
 param vnetAddressSpace string
 param subnetAddressSpace string
+param hubName string
+param hubId string
 param location string = resourceGroup().location
 
+var vnetName = 'vnet-${spokeName}'
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
-  name: name
+  name: vnetName
   location: location
   tags: {
-    'azfw-mapping': tag
+    'azfw-mapping': spokeName
   }
   properties: {
     addressSpace: {
@@ -37,6 +38,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
+module aci 'container-instances.bicep' = {
+  name: '${spokeName}-aci-deployment'
+  params: {
+    name: 'ci-${spokeName}'
+    location: location
+    subnetId: virtualNetwork.properties.subnets[0].id
+  }
+}
+
 resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
   name: '${virtualNetwork.name}/spoke-to-hub'
   properties: {
@@ -50,7 +60,7 @@ resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
 }
 
 resource HubToSpokePeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
-  name: '${hubName}/hub-to-${name}'
+  name: '${hubName}/hub-to-${vnetName}'
   properties: {
     allowVirtualNetworkAccess: true
     allowGatewayTransit: true
