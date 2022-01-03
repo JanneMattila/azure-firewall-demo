@@ -8,6 +8,29 @@ param location string = resourceGroup().location
 
 var vnetName = 'vnet-${spokeName}'
 
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-01' = {
+  name: 'nsg-${spokeName}-front'
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'allowAllRule'
+        properties: {
+          description: 'Allow all traffic'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+    ]
+  }
+}
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vnetName
   location: location
@@ -27,6 +50,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
           addressPrefix: subnetAddressSpace
           routeTable: {
             id: routeTableId
+          }
+          networkSecurityGroup: {
+            id: networkSecurityGroup.id
           }
           delegations: [
             {

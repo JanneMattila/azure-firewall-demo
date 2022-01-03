@@ -5,7 +5,7 @@ resource parentFirewall 'Microsoft.Network/firewallPolicies@2021-05-01' existing
   name: parentName
 }
 
-resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2020-11-01' = {
+resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2021-05-01' = {
   name: name
   parent: parentFirewall
   properties: {

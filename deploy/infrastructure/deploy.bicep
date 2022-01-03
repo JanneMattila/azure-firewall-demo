@@ -68,6 +68,7 @@ resource spoke1RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${spokes[0].name}-front'
   location: location
   properties: {
+    disableBgpRoutePropagation: true
     routes: [
       {
         name: 'All'
@@ -86,6 +87,7 @@ resource spoke2RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${spokes[1].name}-front'
   location: location
   properties: {
+    disableBgpRoutePropagation: true
     routes: [
       {
         name: 'All'
@@ -104,6 +106,7 @@ resource spoke3RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${spokes[2].name}-front'
   location: location
   properties: {
+    disableBgpRoutePropagation: true
     routes: [
       {
         name: spokes[1].name
