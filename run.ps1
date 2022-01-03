@@ -15,19 +15,25 @@ $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
 $resourceGroupName = "rg-azure-firewall-demo"
 Measure-Command -Expression { 
-    $script::$result = .\deploy.ps1 `
+    $global:result = .\deploy.ps1 `
         -Username $username `
         -Password $password `
         -ResourceGroupName $resourceGroupName
 } | Format-Table
+
+$bastion = $result.Outputs.bastionName.value
+$virtualMachineResourceId = $result.Outputs.virtualMachineResourceId.value
+
+$bastion
+$virtualMachineResourceId
 
 # Few notes about deployment:
 # - Same deployment can be executed in pipeline
 #   by Azure AD Service Principal
 # - You can deploy this to multiple resources groups
 #   - This is extremely handy since deleting also takes time
-# - Deployment takes roughly nn minutes
-#
+# - Initial deployment takes roughly 30 minutes
+# - Incremental deployments take roughly 15 minutes
 
 ###############################
 #  ____
@@ -45,32 +51,30 @@ $username | clip
 $plainTextPassword
 $plainTextPassword | clip
 
-# TBD:
+# Connect to a VM using Bastion and the native client on your Windows computer (Preview)
 # https://docs.microsoft.com/en-us/azure/bastion/connect-native-client-windows
+az login -o none
+az extension add --upgrade --yes --name ssh
 az network bastion ssh `
-    --name $result.outputs.bastionName `
+    --name $bastion `
     --resource-group $resourceGroupName `
-    --target-resource-id $result.outputs.virtualMachineResourceId `
+    --target-resource-id $virtualMachineResourceId `
     --username $username `
-    --auth-type $plainTextPassword
- 
+    --auth-type password
+
+# Now you can execute commands from our jumbox
+curl http://10.1.0.4/
+# -> <html><body>Hello
+curl http://10.2.0.4/
+# -> <html><body>Hello
+curl http://10.3.0.4/
+# -> <html><body>Hello
+
+# Exit ssh (our jumpbox)
+exit
+
 # https://docs.microsoft.com/en-us/powershell/module/az.compute/get-azvmruncommand?view=azps-7.0.0
 # Get-AzVMRunCommand
-curl http://10.1.0.4/
-curl http://10.2.0.4/
-curl http://10.3.0.4/
-
-##################################
-#  ____  _
-# |  _ \| | __ _ _   _
-# | |_) | |/ _` | | | |
-# |  __/| | (_| | |_| |
-# |_|   |_|\__,_|\__, |
-#                |___/
-# with our setup
-##################################
-
-# To be added
 
 ##################################
 #   ____ _

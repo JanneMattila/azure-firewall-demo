@@ -1,4 +1,5 @@
 param name string
+param gatewaySubnetRouteTableId string
 param location string
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
@@ -15,6 +16,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'GatewaySubnet'
         properties: {
           addressPrefix: '10.0.0.0/24'
+          routeTable: {
+            id: gatewaySubnetRouteTableId
+          }
         }
       }
       {

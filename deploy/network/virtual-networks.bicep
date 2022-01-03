@@ -3,21 +3,59 @@ param username string
 @secure()
 param password string
 
-var hubName = 'vnet-hub'
-var spoke001 = 'vnet-spoke001'
-var spoke002 = 'vnet-spoke002'
-var spoke003 = 'vnet-spoke003'
+var hubName = 'hub'
+var hubVNetName = 'vnet-${hubName}'
+var firewallIpAddress = '10.0.1.4'
+var spoke001 = 'spoke001'
+var spoke002 = 'spoke002'
+var spoke003 = 'spoke003'
 var bastionName = 'bas-management'
 
-var spoke001Name = 'vnet-${spoke001}'
-var spoke002Name = 'vnet-${spoke002}'
-var spoke003Name = 'vnet-${spoke003}'
+var spoke001VNetName = 'vnet-${spoke001}'
+var spoke002VNetName = 'vnet-${spoke002}'
+var spoke003VNetName = 'vnet-${spoke003}'
+
+var spoke001VNetAddressSpace = '10.1.0.0/22'
+var spoke002VNetAddressSpace = '10.2.0.0/22'
+var spoke003VNetAddressSpace = '10.3.0.0/22'
+var spoke001SubnetAddressSpace = '10.1.0.0/24'
+var spoke002SubnetAddressSpace = '10.2.0.0/24'
+var spoke003SubnetAddressSpace = '10.3.0.0/24'
+
+resource gatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+  name: 'rt-${hubName}-gateway'
+  location: location
+  properties: {
+    disableBgpRoutePropagation: false
+    routes: [
+      {
+        name: spoke001VNetName
+        properties: {
+          addressPrefix: spoke001SubnetAddressSpace
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+      {
+        name: spoke002VNetName
+        properties: {
+          addressPrefix: spoke002SubnetAddressSpace
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+    ]
+  }
+}
 
 // Hub subnets are defined inside module
 module hubVirtualNetwork 'hub-virtual-network.bicep' = {
   name: 'hub-deployment'
   params: {
-    name: hubName
+    name: hubVNetName
+    gatewaySubnetRouteTableId: gatewaySubnetRouteTable.id
     location: location
   }
 }
@@ -54,13 +92,13 @@ module jumpbox 'jumpbox.bicep' = {
 module spoke001VirtualNetwork 'spoke-virtual-network.bicep' = {
   name: '${spoke001}-deployment'
   params: {
-    name: spoke001Name
+    name: spoke001VNetName
     tag: spoke001
-    hubName: hubName
+    hubName: hubVNetName
     hubId: hubVirtualNetwork.outputs.id
     location: location
-    vnetAddressSpace: '10.1.0.0/22'
-    subnetAddressSpace: '10.1.0.0/24' // Only 1 subnet in our spokes
+    vnetAddressSpace: spoke001VNetAddressSpace
+    subnetAddressSpace: spoke001SubnetAddressSpace // Only 1 subnet in our spokes
   }
   dependsOn: [
     vpn
@@ -79,13 +117,13 @@ module aciSpoke001 'container-instances.bicep' = {
 module spoke002VirtualNetwork 'spoke-virtual-network.bicep' = {
   name: '${spoke002}-deployment'
   params: {
-    name: spoke002Name
+    name: spoke002VNetName
     tag: spoke002
-    hubName: hubName
+    hubName: hubVNetName
     hubId: hubVirtualNetwork.outputs.id
     location: location
-    vnetAddressSpace: '10.2.0.0/22'
-    subnetAddressSpace: '10.2.0.0/24' // Only 1 subnet in our spokes
+    vnetAddressSpace: spoke002VNetAddressSpace
+    subnetAddressSpace: spoke002SubnetAddressSpace // Only 1 subnet in our spokes
   }
   dependsOn: [
     vpn
@@ -104,13 +142,13 @@ module aciSpoke002 'container-instances.bicep' = {
 module spoke003VirtualNetwork 'spoke-virtual-network.bicep' = {
   name: '${spoke003}-deployment'
   params: {
-    name: spoke003Name
+    name: spoke003VNetName
     tag: spoke003
-    hubName: hubName
+    hubName: hubVNetName
     hubId: hubVirtualNetwork.outputs.id
     location: location
-    vnetAddressSpace: '10.3.0.0/22'
-    subnetAddressSpace: '10.3.0.0/24' // Only 1 subnet in our spokes
+    vnetAddressSpace: spoke003VNetAddressSpace
+    subnetAddressSpace: spoke003SubnetAddressSpace // Only 1 subnet in our spokes
   }
   dependsOn: [
     vpn

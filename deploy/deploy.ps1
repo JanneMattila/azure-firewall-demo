@@ -53,4 +53,3 @@ $result = New-AzResourceGroupDeployment `
     -Verbose
 
 $result
-return $result
