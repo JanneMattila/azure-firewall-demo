@@ -69,12 +69,38 @@ az network bastion ssh `
     --auth-type password
 
 # Now you can execute commands from our jumbox
-curl http://10.1.0.4/
+spoke1="http://10.1.0.4"
+spoke2="http://10.2.0.4"
+spoke3="http://10.3.0.4"
+curl $spoke1
 # -> <html><body>Hello
-curl http://10.2.0.4/
+curl $spoke2
 # -> <html><body>Hello
-curl http://10.3.0.4/
+curl $spoke3
 # -> <html><body>Hello
+
+# Test outbound internet accesses
+BODY=$(echo "HTTP GET \"https://github.com\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands"
+
+# Test outbound vnet-to-vnet
+# Spoke001
+# -> Spoke002 - OK
+BODY=$(echo "HTTP GET \"$spoke2\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
+# -> Spoke003 - OK
+BODY=$(echo "HTTP GET \"$spoke3\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
+
+# Spoke002
+# -> Spoke001 - OK
+BODY=$(echo "HTTP GET \"$spoke1\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
+# - Spoke001 -> Spoke003 - OK
+BODY=$(echo "HTTP GET \"$spoke3\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
 
 # Exit ssh (our jumpbox)
 exit

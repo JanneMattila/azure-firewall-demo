@@ -109,9 +109,9 @@ resource spoke3RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
     disableBgpRoutePropagation: true
     routes: [
       {
-        name: spokes[1].name
+        name: spokes[2].name
         properties: {
-          addressPrefix: spokes[1].vnetAddressSpace
+          addressPrefix: spokes[2].vnetAddressSpace
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
           hasBgpOverride: false
