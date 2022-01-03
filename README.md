@@ -1,8 +1,10 @@
 # Azure Firewall Demo
 
-Azure Firewall demo
+Azure Firewall demo enables you quickly deploy following environment:
 
-### In-Scope
+![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/147936545-14f53b9b-0b78-46d0-99f7-ed996e530cfa.png)
+
+### In-Scope of demo
 
 - Quickly deploy Azure Firewall environment
   - Initial deployment ~30-40 minutes and incremental deployments ~15-20 minutes 
@@ -22,6 +24,7 @@ Azure Firewall demo
 
 - Separating solution into multiple resource groups
   - As in any normal Enterprise environment
+- On-premises connectivity deployment
 
 ### Infrastructure notes
 
@@ -31,10 +34,108 @@ To optimize costs some resource pricing tier decisions has been made:
 - Jumpbox Ubuntu VM `Standard_B2s`
 - Estimated cost of demo environment: `< 20 EUR, < 20 USD per work day`
 
+### Implementation walk through
+
+Azure infrastructure resources have been divided into following feature folders:
+
+```
+.
+├───firewall
+│   └───rulecollectiongroups
+│       ├───1-common
+│       ├───2-vnet
+│       ├───3-on-premises
+│       └───4-spoke
+└───infrastructure
+    ├───hub
+    └───spoke
+```
+
+`infrastructure` folder contains deployment of virtual networks, subnets, virtual network peering,
+route tables, network security groups and sample test workload.
+
+`firewall` folder contains deployment of Azure firewall. 
+
+`rulecollectiongroups` folder contains split of different firewall rules so that they would
+be easier to manage:
+
+- `1-common` contains common critical rules, such as Windows Update etc.
+- `2-vnet` contains `vnet-to-vnet` and `vnet-to-internet` rules 
+- `3-on-premises` contains rules specific to on-premises network connectivity
+- `4-spoke` contains rules that you need to implement as spoke specific
+
+Centralized firewall team to would maintain these rules:
+
+- `1-common`
+- `2-vnet`
+- `3-on-premises`
+
+Spoke teams can request firewall team to implement or they can 
+implement their required changes under this path:
+
+- `4-spoke`
+
+**Note:** It does not matter who changes the rules, pull request, code review and deployment automation still applies.
+No rule maintenance in portal should be done.
+
+### Implemented firewall rules
+
+#### All spoke networks
+
+- Internet access via firewall
+  - `www.microsoft.com` is allowed
+    - Note: This is overridden in spoke003 to be denied
+
+#### Spoke001
+
+- All traffic is routed to firewall
+- Internet access via firewall
+  - `github.com`
+  - `bing.com`
+  - `docs.microsoft.com`
+- VNet accesses
+  - Full access to spoke002
+  - Http (port 80) access to spoke003
+- On-premises network access
+
+#### Spoke002
+
+- All traffic is routed to firewall
+- Internet access via firewall
+  - `github.com`
+- VNet accesses
+  - Full access to spoke001
+  - No access to spoke003
+- No on-premises network access
+
+#### Spoke003
+
+- Traffic targeted to spoke001 address space is routed to firewall
+- Internet access via firewall
+  - `github.com`
+- VNet accesses
+  - Full access to spoke001
+  - No access to spoke002
+- No on-premises network access
+
 ## Usage
 
-Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment.
+1. Clone this repository to your own machine.
+2. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
 
+## Try it yourself
+
+Here are few tasks that you can try yourself:
+
+### Deploy new spoke network
+
+<details>
+<summary>Hint to get you started...</summary>
+
+Open `infrastructure/deploy.bicep` and look for `spokes` array and
+see how it's used.
+
+</details>
 
 ## Links
 
