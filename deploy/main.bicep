@@ -22,3 +22,5 @@ module firewall 'firewall/deploy.bicep' = {
 
 output virtualNetworks object = virtualNetworks
 output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
+output bastionName string = virtualNetworks.outputs.bastionName
+output virtualMachineResourceId string = virtualNetworks.outputs.virtualMachineResourceId

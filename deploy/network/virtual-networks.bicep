@@ -7,6 +7,7 @@ var hubName = 'vnet-hub'
 var spoke001 = 'vnet-spoke001'
 var spoke002 = 'vnet-spoke002'
 var spoke003 = 'vnet-spoke003'
+var bastionName = 'bas-management'
 
 var spoke001Name = 'vnet-${spoke001}'
 var spoke002Name = 'vnet-${spoke002}'
@@ -33,7 +34,7 @@ module vpn 'vpn.bicep' = {
 module bastion 'bastion.bicep' = {
   name: 'bastion-deployment'
   params: {
-    name: 'bas-management'
+    name: bastionName
     location: location
     subnetId: hubVirtualNetwork.outputs.bastionSubnetId
   }
@@ -129,3 +130,6 @@ output firewallSubnetId string = hubVirtualNetwork.outputs.firewallSubnetId
 output spoke001SubnetId string = spoke001VirtualNetwork.outputs.subnetId
 output spoke002SubnetId string = spoke002VirtualNetwork.outputs.subnetId
 output spoke003SubnetId string = spoke003VirtualNetwork.outputs.subnetId
+
+output bastionName string = bastionName
+output virtualMachineResourceId string = jumpbox.outputs.virtualMachineResourceId

@@ -61,3 +61,5 @@ resource ubuntuVM 'Microsoft.Compute/virtualMachines@2020-12-01' = {
     }
   }
 }
+
+output virtualMachineResourceId string = ubuntuVM.id

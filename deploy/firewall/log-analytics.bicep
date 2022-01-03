@@ -11,10 +11,9 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06
   location: location
 }
 
-resource diagnosticSettings 'microsoft.insights/diagnosticSettings@2016-09-01' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-preview' = {
   name: name
   scope: parentFirewall
-  location: location
   properties: {
     workspaceId: logAnalyticsWorkspace.id
     logs: [

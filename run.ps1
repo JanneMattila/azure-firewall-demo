@@ -13,16 +13,19 @@ $username = "jumpboxuser"
 $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
+$resourceGroupName = "rg-azure-firewall-demo"
 Measure-Command -Expression { 
-    .\deploy.ps1 `
+    $script::$result = .\deploy.ps1 `
         -Username $username `
         -Password $password `
-        -ResourceGroupName "rg-azure-firewall-demo2"
+        -ResourceGroupName $resourceGroupName
 } | Format-Table
 
 # Few notes about deployment:
 # - Same deployment can be executed in pipeline
 #   by Azure AD Service Principal
+# - You can deploy this to multiple resources groups
+#   - This is extremely handy since deleting also takes time
 # - Deployment takes roughly nn minutes
 #
 
@@ -38,11 +41,19 @@ Measure-Command -Expression {
 # 1. Open VM Blade -> Connect -> Bastion
 # 2. Use following credentials:
 $username
+$username | clip
 $plainTextPassword
+$plainTextPassword | clip
 
 # TBD:
 # https://docs.microsoft.com/en-us/azure/bastion/connect-native-client-windows
-# TODO: az network bastion ssh --name "<BastionName>" --resource-group "<ResourceGroupName>" --target-resource-id "<VMResourceId>" --auth-type "password" --username "<Username>"
+az network bastion ssh `
+    --name $result.outputs.bastionName `
+    --resource-group $resourceGroupName `
+    --target-resource-id $result.outputs.virtualMachineResourceId `
+    --username $username `
+    --auth-type $plainTextPassword
+ 
 # https://docs.microsoft.com/en-us/powershell/module/az.compute/get-azvmruncommand?view=azps-7.0.0
 # Get-AzVMRunCommand
 curl http://10.1.0.4/
@@ -70,4 +81,4 @@ curl http://10.3.0.4/
 # up demo resources 
 ##################################
 
-Remove-AzResourceGroup -Name "rg-azure-firewall-demo" -Force
+Remove-AzResourceGroup -Name $resourceGroupName -Force
