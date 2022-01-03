@@ -7,7 +7,7 @@ resource parentFirewall 'Microsoft.Network/azureFirewalls@2020-11-01' existing =
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-  name: name
+  name: 'log-firewall'
   location: location
 }
 
@@ -32,5 +32,3 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
     ]
   }
 }
-
-output workspaceId string = logAnalyticsWorkspace.properties.customerId

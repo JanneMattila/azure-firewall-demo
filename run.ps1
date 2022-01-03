@@ -9,6 +9,8 @@
 
 # Run deployment
 Set-Location .\deploy\
+# To understand the demo structure better, see tree of directories
+tree
 $username = "jumpboxuser"
 $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
@@ -20,6 +22,10 @@ Measure-Command -Expression {
         -Password $password `
         -ResourceGroupName $resourceGroupName
 } | Format-Table
+
+# Note: If you get deployment errors, then you can see details in either:
+# - Resource Group -> Activity log
+# - Resource Group -> Deployments
 
 $bastion = $result.Outputs.bastionName.value
 $virtualMachineResourceId = $result.Outputs.virtualMachineResourceId.value

@@ -6,6 +6,7 @@ param password string
 var hubName = 'hub'
 var hubVNetName = 'vnet-${hubName}'
 var firewallIpAddress = '10.0.1.4'
+var all = '0.0.0.0/0'
 
 var spokes = [
   {
@@ -25,6 +26,7 @@ var spokes = [
   }
 ]
 
+// All route tables are defined here
 resource gatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${hubName}-gateway'
   location: location
@@ -49,9 +51,84 @@ resource gatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
           hasBgpOverride: false
         }
       }
+      {
+        name: spokes[2].name
+        properties: {
+          addressPrefix: spokes[2].vnetAddressSpace
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
     ]
   }
 }
+
+resource spoke1RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+  name: 'rt-${spokes[0].name}-front'
+  location: location
+  properties: {
+    routes: [
+      {
+        name: 'All'
+        properties: {
+          addressPrefix: all
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+    ]
+  }
+}
+
+resource spoke2RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+  name: 'rt-${spokes[1].name}-front'
+  location: location
+  properties: {
+    routes: [
+      {
+        name: 'All'
+        properties: {
+          addressPrefix: all
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+    ]
+  }
+}
+
+resource spoke3RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+  name: 'rt-${spokes[2].name}-front'
+  location: location
+  properties: {
+    routes: [
+      {
+        name: spokes[1].name
+        properties: {
+          addressPrefix: spokes[1].vnetAddressSpace
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+    ]
+  }
+}
+
+var spokeRouteTables = [
+  {
+    id: spoke1RouteTable.id
+  }
+  {
+    id: spoke2RouteTable.id
+  }
+  {
+    id: spoke3RouteTable.id
+  }
+]
 
 module hub 'hub/deploy.bicep' = {
   name: 'hub-deployment'
@@ -64,7 +141,7 @@ module hub 'hub/deploy.bicep' = {
   }
 }
 
-module spokeDeployments 'spoke/deploy.bicep' = [for spoke in spokes: {
+module spokeDeployments 'spoke/deploy.bicep' = [for (spoke, i) in spokes: {
   name: '${spoke.name}-deployment'
   params: {
     spokeName: spoke.name
@@ -73,6 +150,7 @@ module spokeDeployments 'spoke/deploy.bicep' = [for spoke in spokes: {
     location: location
     vnetAddressSpace: spoke.vnetAddressSpace
     subnetAddressSpace: spoke.subnetAddressSpace
+    routeTableId: spokeRouteTables[i].id
   }
   dependsOn: [
     hub

@@ -3,6 +3,7 @@ param vnetAddressSpace string
 param subnetAddressSpace string
 param hubName string
 param hubId string
+param routeTableId string
 param location string = resourceGroup().location
 
 var vnetName = 'vnet-${spokeName}'
@@ -24,6 +25,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'snet-front'
         properties: {
           addressPrefix: subnetAddressSpace
+          routeTable: {
+            id: routeTableId
+          }
           delegations: [
             {
               name: 'ACIDelegation'
