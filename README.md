@@ -89,6 +89,10 @@ It enables you to execute paths of `HTTP GET` or `HTTP POST` requests (and other
 Example: Post command to `spoke001` to then further post command to `spoke002`.
 Using this method you can test if your rules work as expected.
 
+Here is diagram that illustrates the testing flow using `webapp-network-tester` in our demo architecture:
+
+![Request flow in our architecture](https://user-images.githubusercontent.com/2357647/148060299-9fb70956-cf56-46e4-a389-a36ff87b9b13.png)
+
 ### Implemented firewall rules
 
 #### All spoke networks
