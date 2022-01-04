@@ -122,11 +122,10 @@ Using this method you can test if your rules work as expected.
 #### Spoke003
 
 - Traffic targeted to spoke001 address space is routed to firewall
-- Internet access via firewall
+- Internet access via direct routing to internet
   - `github.com`
-- VNet accesses
-  - Full access to spoke001
-  - No access to spoke002
+- No VNet network accesses
+  - No allow firewall rules defined
 - No on-premises network access
 
 ## Usage
