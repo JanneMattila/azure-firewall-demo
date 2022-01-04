@@ -110,7 +110,7 @@ curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
 curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://www.bing.com\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
 curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
 
@@ -130,7 +130,7 @@ curl -X POST --data  "HTTP GET \"$spoke3\"" -H "Content-Type: text/plain" "$spok
 
 # Spoke003 -> Spoke001 is denied by firewall
 curl -X POST --data  "HTTP GET \"$spoke1\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Deny
-# Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach to target server
+# Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach the target server
 curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Timeout
 
 # Exit ssh (our jumpbox)
