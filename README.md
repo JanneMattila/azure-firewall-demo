@@ -130,7 +130,8 @@ Using this method you can test if your rules work as expected.
 
 1. Clone this repository to your own machine.
 2. Update Azure `Az` PowerShell module ([instructions](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0))
-3. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
+3. Install [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell)
+4. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
   - Execute different script steps one-by-one (hint: use [shift-enter](https://github.com/JanneMattila/some-questions-and-some-answers/blob/master/q%26a/vs_code.md#automation-tip-shift-enter))
 
 ## Try it yourself

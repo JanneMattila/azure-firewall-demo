@@ -11,6 +11,10 @@
 # https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0
 Update-Module Az
 
+# Remember to install Bicep!
+# https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell
+bicep --version # 0.4.1124 or newer
+
 # Login to Azure
 Login-AzAccount
 
