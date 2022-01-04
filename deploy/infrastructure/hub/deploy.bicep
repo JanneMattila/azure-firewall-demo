@@ -3,6 +3,7 @@ param username string
 @secure()
 param password string
 param gatewaySubnetRouteTableId string
+param managementSubnetRouteTableId string
 param location string
 
 var bastionName = 'bas-management'
@@ -37,6 +38,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'snet-infra'
         properties: {
           addressPrefix: '10.0.2.0/24'
+          // If you further expand this demo, then most likely
+          // you need to implement route table for this specific
+          // subnet as well.
         }
       }
       {
@@ -44,6 +48,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         name: 'snet-management'
         properties: {
           addressPrefix: '10.0.3.0/24'
+          routeTable: {
+            id: managementSubnetRouteTableId
+          }
         }
       }
       {

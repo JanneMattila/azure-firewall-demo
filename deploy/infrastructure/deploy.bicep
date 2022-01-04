@@ -27,7 +27,7 @@ var spokes = [
 ]
 
 // All route tables are defined here
-resource gatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${hubName}-gateway'
   location: location
   properties: {
@@ -55,6 +55,25 @@ resource gatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
         name: spokes[2].name
         properties: {
           addressPrefix: spokes[2].vnetAddressSpace
+          nextHopType: 'VirtualAppliance'
+          nextHopIpAddress: firewallIpAddress
+          hasBgpOverride: false
+        }
+      }
+    ]
+  }
+}
+
+resource hubManagementSubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+  name: 'rt-${hubName}-management'
+  location: location
+  properties: {
+    disableBgpRoutePropagation: true
+    routes: [
+      {
+        name: 'All'
+        properties: {
+          addressPrefix: all
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
           hasBgpOverride: false
@@ -139,7 +158,8 @@ module hub 'hub/deploy.bicep' = {
     name: hubVNetName
     username: username
     password: password
-    gatewaySubnetRouteTableId: gatewaySubnetRouteTable.id
+    gatewaySubnetRouteTableId: hubGatewaySubnetRouteTable.id
+    managementSubnetRouteTableId: hubManagementSubnetRouteTable.id
     location: location
   }
 }
