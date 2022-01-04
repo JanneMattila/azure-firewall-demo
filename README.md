@@ -2,7 +2,7 @@
 
 Azure Firewall demo enables you quickly deploy following environment:
 
-![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/148012137-16b326bb-a20b-4448-b6c3-0189bf432906.png)
+![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/148013213-434d6bad-ee7f-42ae-a7a5-4becf265a71c.png)
 
 ### In-Scope of demo
 
