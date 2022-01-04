@@ -7,8 +7,8 @@ module common '1-common/common.bicep' = {
   }
 }
 
-module vnet '2-vnet/vnet.bicep' = {
-  name: 'rcg-vnet-deployment'
+module hub '2-hub/hub.bicep' = {
+  name: 'rcg-hub-deployment'
   params: {
     parentName: parentName
   }
@@ -17,7 +17,17 @@ module vnet '2-vnet/vnet.bicep' = {
   ]
 }
 
-module onPremises '3-on-premises/on-premises.bicep' = {
+module vnet '3-vnet/vnet.bicep' = {
+  name: 'rcg-vnet-deployment'
+  params: {
+    parentName: parentName
+  }
+  dependsOn: [
+    hub
+  ]
+}
+
+module onPremises '4-on-premises/on-premises.bicep' = {
   name: 'rcg-on-premises-deployment'
   params: {
     parentName: parentName
@@ -27,7 +37,7 @@ module onPremises '3-on-premises/on-premises.bicep' = {
   ]
 }
 
-module spokes '4-spoke/deploy.bicep' = {
+module spokes '5-spoke/spokes.bicep' = {
   name: 'rcg-spokes-deployment'
   params: {
     parentName: parentName

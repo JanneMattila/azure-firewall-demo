@@ -43,9 +43,10 @@ Azure infrastructure resources have been divided into following feature folders:
 ├───firewall
 │   └───rulecollectiongroups
 │       ├───1-common
-│       ├───2-vnet
-│       ├───3-on-premises
-│       └───4-spoke
+│       ├───2-hub
+│       ├───3-vnet
+│       ├───4-on-premises
+│       └───5-spoke
 └───infrastructure
     ├───hub
     └───spoke
@@ -60,20 +61,22 @@ route tables, network security groups and sample test workload.
 be easier to manage:
 
 - `1-common` contains common critical rules, such as Windows Update etc.
-- `2-vnet` contains `vnet-to-vnet` and `vnet-to-internet` rules 
-- `3-on-premises` contains rules specific to on-premises network connectivity
-- `4-spoke` contains rules that you need to implement as spoke specific
+- `2-vnet` contains all `hub` specific rules
+- `3-vnet` contains `vnet-to-vnet` and `vnet-to-internet` rules 
+- `4-on-premises` contains rules specific to on-premises network connectivity
+- `5-spoke` contains rules that you need to implement as spoke specific
 
 Centralized firewall team would maintain these rules:
 
 - `1-common`
-- `2-vnet`
-- `3-on-premises`
+- `2-hub`
+- `3-vnet`
+- `4-on-premises`
 
 Spoke teams can request firewall team to implement or they can 
 implement their required changes under this path:
 
-- `4-spoke`
+- `5-spoke`
 
 **Note:** It does not matter who changes the rules, pull request, code review and deployment automation still applies.
 No rule maintenance in portal should be done.
@@ -153,7 +156,7 @@ see how it's used.
 <details>
 <summary>Hint to get you started...</summary>
 
-Open `firewall/2-vnet/deploy.bicep` and look for `Allow-VNET-To-Internet-Application-Rules`
+Open `firewall/3-vnet/deploy.bicep` and look for `Allow-VNET-To-Internet-Application-Rules`
 rule collection. It already contains rule for `github.com` as example.
 
 </details>

@@ -8,11 +8,11 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
   name: 'On-premises'
   parent: parentFirewall
   properties: {
-    priority: 300
+    priority: 400
     ruleCollections: [
       {
         name: 'Allow-On-premises-To-VNET-Network-Rules'
-        priority: 301
+        priority: 401
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
           type: 'Allow'
@@ -43,7 +43,7 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
       {
         name: 'Allow-VNET-To-On-premises-Application-Rules'
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        priority: 302
+        priority: 402
         action: {
           type: 'Allow'
         }

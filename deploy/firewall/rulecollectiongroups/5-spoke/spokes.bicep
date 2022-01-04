@@ -8,11 +8,11 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
   name: 'Spoke-specific'
   parent: parentFirewall
   properties: {
-    priority: 1000
+    priority: 500
     ruleCollections: [
       {
         name: 'Allow-Spoke001-To-Internet-Application-Rules'
-        priority: 1000
+        priority: 501
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
           type: 'Allow'
@@ -23,7 +23,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             name: 'Spoke001 to www.bing.com'
             description: 'Allow spoke001 to connect to www.bing.com'
             sourceAddresses: [
-              '10.1.0.0/22'
+              '10.1.0.0/22' // spoke001
             ]
             protocols: [
               {
@@ -40,7 +40,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             name: 'Spoke001 to docs.microsoft.com'
             description: 'Allow spoke001 to connect to docs.microsoft.com'
             sourceAddresses: [
-              '10.1.0.0/22'
+              '10.1.0.0/22' // spoke001
             ]
             protocols: [
               {
@@ -56,7 +56,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
       }
       {
         name: 'Deny-Spoke002-To-Internet-Application-Rules'
-        priority: 1011
+        priority: 502
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
           type: 'Deny'
@@ -67,7 +67,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             name: 'Spoke003 to www.microsoft.com'
             description: 'Deny spoke003 to connect to www.microsoft.com'
             sourceAddresses: [
-              '10.3.0.0/22'
+              '10.3.0.0/22' // spoke003
             ]
             protocols: [
               {
