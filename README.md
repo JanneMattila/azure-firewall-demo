@@ -163,6 +163,33 @@ rule collection. It already contains rule for `github.com` as example.
 
 </details>
 
+#### Find firewall logs
+
+- ACI communicating with `wwww.bing.com` running inside `spoke001` vnet
+
+<details>
+<summary>Hint to get you started...</summary>
+
+Use IP address of ACI `10.1.0.4` and then target address in your `AzureDiagnostics` query.
+
+</details>
+
+<details>
+<summary>Solution</summary>
+
+Here is example query:
+
+```sql
+AzureDiagnostics 
+| where Category <> "AzureFirewallDnsProxy"
+| where OperationName == "AzureFirewallApplicationRuleLog"
+| where msg_s contains "www.bing.com:443." and msg_s contains "10.1.0.4"
+| project TimeGenerated, msg_s
+```
+
+</details>
+
+
 ## Improvement ideas
 
 - Look up (at least some) network IP ranges e.g., spoke vnet address spaces 
