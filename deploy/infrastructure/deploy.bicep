@@ -64,25 +64,6 @@ resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' =
   }
 }
 
-resource hubManagementSubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
-  name: 'rt-${hubName}-management'
-  location: location
-  properties: {
-    disableBgpRoutePropagation: true
-    routes: [
-      {
-        name: 'All'
-        properties: {
-          addressPrefix: all
-          nextHopType: 'VirtualAppliance'
-          nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
-        }
-      }
-    ]
-  }
-}
-
 resource spoke1RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
   name: 'rt-${spokes[0].name}-front'
   location: location
@@ -159,7 +140,6 @@ module hub 'hub/deploy.bicep' = {
     username: username
     password: password
     gatewaySubnetRouteTableId: hubGatewaySubnetRouteTable.id
-    managementSubnetRouteTableId: hubManagementSubnetRouteTable.id
     location: location
   }
 }

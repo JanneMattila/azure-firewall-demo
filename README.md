@@ -61,7 +61,7 @@ route tables, network security groups and sample test workload.
 be easier to manage:
 
 - `1-common` contains common critical rules, such as Windows Update etc.
-- `2-vnet` contains all `hub` specific rules
+- `2-hub` contains all `hub` specific rules
 - `3-vnet` contains `vnet-to-vnet` and `vnet-to-internet` rules 
 - `4-on-premises` contains rules specific to on-premises network connectivity
 - `5-spoke` contains rules that you need to implement as spoke specific
