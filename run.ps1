@@ -87,26 +87,28 @@ curl $spoke3
 
 # Test outbound internet accesses
 BODY=$(echo "HTTP GET \"https://github.com\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands"
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK
+
+BODY=$(echo "HTTP GET \"https://www.microsoft.com\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK
 
 # Test outbound vnet-to-vnet
-# Spoke001
-# -> Spoke002 - OK
-BODY=$(echo "HTTP GET \"$spoke2\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
-# -> Spoke003 - OK
-BODY=$(echo "HTTP GET \"$spoke3\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands"
+# Spoke001 -> Spoke002, Spoke002 - Both OK
+curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data  "HTTP GET \"$spoke3\"" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
 
-# Spoke002
-# -> Spoke001 - OK
-BODY=$(echo "HTTP GET \"$spoke1\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
-# - Spoke003 - Blocked by firewall
-BODY=$(echo "HTTP GET \"$spoke3\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands"
+# Spoke002 -> Spoke001 OK but, Spoke003 is denied by firewall
+curl -X POST --data  "HTTP GET \"$spoke1\"" -H "Content-Type: text/plain" "$spoke2/api/commands" # OK
+curl -X POST --data  "HTTP GET \"$spoke3\"" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
+
+# Spoke003 -> Spoke001 is denied by firewall
+curl -X POST --data  "HTTP GET \"$spoke1\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Deny
+# Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach to target server
+curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Timeouts
 
 # Exit ssh (our jumpbox)
 exit
