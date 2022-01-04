@@ -198,6 +198,8 @@ AzureDiagnostics
 - Look up (at least some) network IP ranges e.g., spoke vnet address spaces 
   and pass them to firewall deployment as parameters
   - You wouldn't need to use hardcoded IP addresses
+  - You can use e.g., resource graph queries to list all spokes etc.
+    - See [scan-spokes.ps1](./deploy/firewall/rulecollectiongroups/5-spoke/scan-spokes.ps1) for example queries
 
 ## Links
 
