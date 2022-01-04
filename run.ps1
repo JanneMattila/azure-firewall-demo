@@ -7,6 +7,12 @@
 # demo script
 ##################################
 
+# Login to Azure
+Login-AzAccount
+
+# *Explicitly* select your working context
+Select-AzSubscription -Subscription "<YourSubscriptionName>"
+
 # Run deployment
 Set-Location .\deploy\
 # To understand the demo structure better, see tree of directories

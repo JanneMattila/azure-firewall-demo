@@ -2,7 +2,7 @@
 
 Azure Firewall demo enables you quickly deploy following environment:
 
-![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/147936545-14f53b9b-0b78-46d0-99f7-ed996e530cfa.png)
+![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/148012137-16b326bb-a20b-4448-b6c3-0189bf432906.png)
 
 ### In-Scope of demo
 
@@ -78,6 +78,11 @@ implement their required changes under this path:
 **Note:** It does not matter who changes the rules, pull request, code review and deployment automation still applies.
 No rule maintenance in portal should be done.
 
+In order to test firewall setup, all spokes have [webapp-network-tester](https://github.com/JanneMattila/webapp-network-tester) deployed.
+It enables you to execute paths of `HTTP GET` or `HTTP POST` requests (and other commands as well).
+Example: Post command to `spoke001` to then further post command to `spoke002`.
+Using this method you can test if your rules work as expected.
+
 ### Implemented firewall rules
 
 #### All spoke networks
@@ -121,20 +126,31 @@ No rule maintenance in portal should be done.
 ## Usage
 
 1. Clone this repository to your own machine.
-2. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
+2. Update Azure `Az` PowerShell module ([instructions](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0))
+3. Open [run.ps1](run.ps1) to walk through steps to deploy this demo environment
   - Execute different script steps one-by-one (hint: use [shift-enter](https://github.com/JanneMattila/some-questions-and-some-answers/blob/master/q%26a/vs_code.md#automation-tip-shift-enter))
 
 ## Try it yourself
 
 Here are few tasks that you can try yourself:
 
-### Deploy new spoke network
+#### Deploy new spoke network
 
 <details>
 <summary>Hint to get you started...</summary>
 
 Open `infrastructure/deploy.bicep` and look for `spokes` array and
 see how it's used.
+
+</details>
+
+#### Allow access to `www.linkedin.com` from `spoke001`
+
+<details>
+<summary>Hint to get you started...</summary>
+
+Open `firewall/2-vnet/deploy.bicep` and look for `Allow-VNET-To-Internet-Application-Rules`
+rule collection. It already contains rule for `github.com` as example.
 
 </details>
 
