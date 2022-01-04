@@ -78,6 +78,9 @@ implement their required changes under this path:
 **Note:** It does not matter who changes the rules, pull request, code review and deployment automation still applies.
 No rule maintenance in portal should be done.
 
+**Note:** Spoke subnets have Network Security Groups (NSGs) deployed with `Allow` rule.
+You can also change them to test different scenarios.
+
 In order to test firewall setup, all spokes have [webapp-network-tester](https://github.com/JanneMattila/webapp-network-tester) deployed.
 It enables you to execute paths of `HTTP GET` or `HTTP POST` requests (and other commands as well).
 Example: Post command to `spoke001` to then further post command to `spoke002`.
@@ -154,6 +157,12 @@ rule collection. It already contains rule for `github.com` as example.
 
 </details>
 
+## Improvement ideas
+
+- Look up (at least some) network IP ranges e.g., spoke vnet address spaces 
+  and pass them to firewall deployment as parameters
+  - You wouldn't need to use hardcoded IP addresses
+
 ## Links
 
 [bicep/docs/examples/301/modules-vwan-to-vnet-s2s-with-fw/](https://github.com/Azure/bicep/tree/main/docs/examples/301/modules-vwan-to-vnet-s2s-with-fw) example templates.
@@ -163,3 +172,5 @@ is great blog post and was one inspiration to built this demo.
 
 [Strong typing for parameters and outputs](https://github.com/Azure/bicep/issues/4158) would
 further improve way how `ruleCollections` are passed on to the `ruleCollectionGroups`.
+
+[Virtual network traffic routing](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)

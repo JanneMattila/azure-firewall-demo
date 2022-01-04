@@ -7,6 +7,10 @@
 # demo script
 ##################################
 
+# Remember to update you Azure Az PowerShell module!
+# https://docs.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0
+Update-Module Az
+
 # Login to Azure
 Login-AzAccount
 
@@ -22,6 +26,11 @@ $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
 $resourceGroupName = "rg-azure-firewall-demo"
+
+# Run deployment in single command
+$global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName
+
+# Run deployment using multi-line command to print the deployment duration (you need to execute all lines)
 Measure-Command -Expression { 
     $global:result = .\deploy.ps1 `
         -Username $username `
@@ -87,17 +96,27 @@ curl $spoke3
 
 # Test outbound internet accesses
 BODY=$(echo "HTTP GET \"https://github.com\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://www.microsoft.com\"")
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # OK
-curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK (via firewall)
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # OK (via firewall)
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
 
-# Test outbound vnet-to-vnet
-# Spoke001 -> Spoke002, Spoke002 - Both OK
+BODY=$(echo "HTTP GET \"https://www.bing.com\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
+
+BODY=$(echo "HTTP GET \"https://docs.microsoft.com\"")
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK (via firewall)
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke2/api/commands" # Deny
+curl -X POST --data "$BODY" -H "Content-Type: text/plain" "$spoke3/api/commands" # OK (due to routing)
+
+# Test outbound vnet-to-vnet using http on port 80
+# Spoke001 -> Spoke002, Spoke003 - Both OK
 curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
 curl -X POST --data  "HTTP GET \"$spoke3\"" -H "Content-Type: text/plain" "$spoke1/api/commands" # OK
 
@@ -108,7 +127,7 @@ curl -X POST --data  "HTTP GET \"$spoke3\"" -H "Content-Type: text/plain" "$spok
 # Spoke003 -> Spoke001 is denied by firewall
 curl -X POST --data  "HTTP GET \"$spoke1\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Deny
 # Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach to target server
-curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Timeouts
+curl -X POST --data  "HTTP GET \"$spoke2\"" -H "Content-Type: text/plain" "$spoke3/api/commands" # Timeout
 
 # Exit ssh (our jumpbox)
 exit

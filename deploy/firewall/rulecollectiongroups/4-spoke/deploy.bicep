@@ -20,8 +20,8 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke001 to bing.com'
-            description: 'Allow spoke001 to connect to bing.com'
+            name: 'Spoke001 to www.bing.com'
+            description: 'Allow spoke001 to connect to www.bing.com'
             sourceAddresses: [
               '10.1.0.0/22'
             ]
@@ -32,7 +32,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
               }
             ]
             targetFqdns: [
-              'bing.com'
+              'www.bing.com'
             ]
           }
           {
@@ -64,7 +64,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke002 to www.microsoft.com'
+            name: 'Spoke003 to www.microsoft.com'
             description: 'Deny spoke003 to connect to www.microsoft.com'
             sourceAddresses: [
               '10.3.0.0/22'
