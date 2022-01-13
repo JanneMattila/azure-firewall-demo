@@ -16,6 +16,11 @@ param location string = resourceGroup().location
 resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
   name: name
   location: location
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
   properties: {
     threatIntelMode: 'Alert'
     sku: {
