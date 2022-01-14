@@ -93,6 +93,14 @@ Here is diagram that illustrates the testing flow using `webapp-network-tester` 
 
 ![Request flow in our architecture](https://user-images.githubusercontent.com/2357647/148060299-9fb70956-cf56-46e4-a389-a36ff87b9b13.png)
 
+If we look that same in sequence diagrams, we can see the overall process like this:
+
+![Overall firewall test process](https://user-images.githubusercontent.com/2357647/149508836-0ef27ca0-4cdd-49bd-8bbc-bfb10a83ef67.png)
+
+And then the end-to-end test scenario like this:
+
+![Request flow in sequence diagram](https://user-images.githubusercontent.com/2357647/149509073-778cd501-8f1f-4277-ac27-76fea7db674a.png)
+
 ### Implemented firewall rules
 
 #### All spoke networks
