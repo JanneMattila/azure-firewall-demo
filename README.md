@@ -99,7 +99,7 @@ If we look that same in sequence diagrams, we can see the overall process like t
 
 And then the end-to-end test scenario like this:
 
-![Request flow in sequence diagram](https://user-images.githubusercontent.com/2357647/149509073-778cd501-8f1f-4277-ac27-76fea7db674a.png)
+![Request flow in sequence diagram](https://user-images.githubusercontent.com/2357647/149509558-5d87eec6-698e-48b1-a806-3bb2fd921822.png)
 
 ### Implemented firewall rules
 
