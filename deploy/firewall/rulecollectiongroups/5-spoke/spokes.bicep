@@ -54,33 +54,6 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
           }
         ]
       }
-      {
-        name: 'Deny-Spoke002-To-Internet-Application-Rules'
-        priority: 502
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        action: {
-          type: 'Deny'
-        }
-        rules: [
-          {
-            ruleType: 'ApplicationRule'
-            name: 'Spoke003 to www.microsoft.com'
-            description: 'Deny spoke003 to connect to www.microsoft.com'
-            sourceAddresses: [
-              '10.3.0.0/22' // spoke003
-            ]
-            protocols: [
-              {
-                port: 443
-                protocolType: 'Https'
-              }
-            ]
-            targetFqdns: [
-              'www.microsoft.com'
-            ]
-          }
-        ]
-      }
     ]
   }
 }

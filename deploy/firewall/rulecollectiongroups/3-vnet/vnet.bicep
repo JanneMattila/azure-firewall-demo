@@ -87,24 +87,6 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
           }
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke003 to github.com'
-            description: 'Allow spoke003 to connect to github.com'
-            sourceAddresses: [
-              '10.3.0.0/22' // spoke003
-            ]
-            protocols: [
-              {
-                port: 443
-                protocolType: 'Https'
-              }
-            ]
-
-            targetFqdns: [
-              'github.com'
-            ]
-          }
-          {
-            ruleType: 'ApplicationRule'
             name: 'All vnets to www.microsoft.com'
             description: 'Allow vnets to connect to www.microsoft.com'
             sourceAddresses: [
