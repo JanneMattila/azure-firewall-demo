@@ -35,7 +35,7 @@ $resourceGroupName = "rg-azure-firewall-demo"
 $global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName
 
 # Run deployment using multi-line command to print the deployment duration (you need to execute all lines)
-Measure-Command -Expression { 
+Measure-Command -Expression {
     $global:result = .\deploy.ps1 `
         -Username $username `
         -Password $password `

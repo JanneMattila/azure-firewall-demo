@@ -103,11 +103,14 @@ And then the end-to-end test scenario like this:
 
 ### Implemented firewall rules
 
+#### Firewall rule collections
+
+![Firewall rule collections](https://user-images.githubusercontent.com/2357647/150791845-9379e1f6-0ade-48d5-9449-873593a974f3.png)
+
 #### All spoke networks
 
 - Internet access via firewall
   - `www.microsoft.com` is allowed
-    - Note: This is overridden in spoke003 to be denied
 
 #### Spoke001
 
@@ -135,7 +138,6 @@ And then the end-to-end test scenario like this:
 
 - Traffic targeted to spoke001 address space is routed to firewall
 - Internet access via direct routing to internet
-  - `github.com`
 - No VNet network accesses
   - No allow firewall rules defined
 - No on-premises network access
