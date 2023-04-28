@@ -79,6 +79,7 @@ $plainTextPassword | clip
 # Connect to a VM using Bastion and the native client on your Windows computer (Preview)
 # https://docs.microsoft.com/en-us/azure/bastion/connect-native-client-windows
 az login -o none
+az extension add --upgrade --yes --name bastion
 az extension add --upgrade --yes --name ssh
 az network bastion ssh `
     --name $bastion `
