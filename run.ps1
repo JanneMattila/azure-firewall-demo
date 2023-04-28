@@ -88,7 +88,7 @@ az network bastion ssh `
     --username $username `
     --auth-type password
 
-# Now you can execute commands from our jumbox
+# Now you can execute commands from our jumpbox
 spoke1="http://10.1.0.4"
 spoke2="http://10.2.0.4"
 spoke3="http://10.3.0.4"
