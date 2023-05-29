@@ -79,6 +79,7 @@ $plainTextPassword | clip
 # Connect to a VM using Bastion and the native client on your Windows computer (Preview)
 # https://docs.microsoft.com/en-us/azure/bastion/connect-native-client-windows
 az login -o none
+az extension add --upgrade --yes --name bastion
 az extension add --upgrade --yes --name ssh
 az network bastion ssh `
     --name $bastion `
@@ -87,7 +88,7 @@ az network bastion ssh `
     --username $username `
     --auth-type password
 
-# Now you can execute commands from our jumbox
+# Now you can execute commands from our jumpbox
 spoke1="http://10.1.0.4"
 spoke2="http://10.2.0.4"
 spoke3="http://10.3.0.4"
