@@ -16,17 +16,54 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
   scope: parentFirewall
   properties: {
     workspaceId: logAnalyticsWorkspace.id
+    logAnalyticsDestinationType: 'Dedicated'
     logs: [
       {
-        category: 'AzureFirewallApplicationRule'
+        category: 'AZFWNetworkRule'
         enabled: true
       }
       {
-        category: 'AzureFirewallNetworkRule'
+        category: 'AZFWApplicationRule'
         enabled: true
       }
       {
-        category: 'AzureFirewallDnsProxy'
+        category: 'AZFWNatRule'
+        enabled: true
+      }
+      {
+        category: 'AZFWThreatIntel'
+        enabled: true
+      }
+      {
+        category: 'AZFWIdpsSignature'
+        enabled: true
+      }
+      {
+        category: 'AZFWDnsQuery'
+        enabled: true
+      }
+      {
+        category: 'AZFWFqdnResolveFailure'
+        enabled: true
+      }
+      {
+        category: 'AZFWFatFlow'
+        enabled: true
+      }
+      {
+        category: 'AZFWFlowTrace'
+        enabled: true
+      }
+      {
+        category: 'AZFWApplicationRuleAggregation'
+        enabled: true
+      }
+      {
+        category: 'AZFWNetworkRuleAggregation'
+        enabled: true
+      }
+      {
+        category: 'AZFWNatRuleAggregation'
         enabled: true
       }
     ]
