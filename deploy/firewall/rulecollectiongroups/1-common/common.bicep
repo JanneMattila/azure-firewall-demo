@@ -20,7 +20,7 @@ resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
         rules: [
           {
             // Justification:
-            // https://docs.microsoft.com/en-us/troubleshoot/azure/virtual-machines/custom-routes-enable-kms-activation
+            // https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/custom-routes-enable-kms-activation
             ruleType: 'NetworkRule'
             name: 'Azure-KMS-Service'
             description: 'Allow traffic from all address spaces to Azure platform KMS Service'

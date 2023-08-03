@@ -37,8 +37,8 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
           }
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke001 to docs.microsoft.com'
-            description: 'Allow spoke001 to connect to docs.microsoft.com'
+            name: 'Spoke001 to learn.microsoft.com'
+            description: 'Allow spoke001 to connect to learn.microsoft.com'
             sourceAddresses: [
               '10.1.0.0/22' // spoke001
             ]
@@ -49,7 +49,7 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
               }
             ]
             targetFqdns: [
-              'docs.microsoft.com'
+              'learn.microsoft.com'
             ]
           }
         ]

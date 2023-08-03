@@ -17,7 +17,7 @@ to identifiers used in firewall in [here](spokes.md).
 - Internet access via firewall
   - `github.com`
   - `bing.com`
-  - `docs.microsoft.com`
+  - `learn.microsoft.com`
 - VNet accesses
   - Full access to spoke002
   - Http (port 80) access to spoke003
