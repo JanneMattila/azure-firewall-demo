@@ -78,7 +78,8 @@ module aci 'container-instances.bicep' = {
 }
 
 resource spokeToHubPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2020-07-01' = {
-  name: '${virtualNetwork.name}/spoke-to-hub'
+  name: 'spoke-to-hub'
+  parent: virtualNetwork
   properties: {
     allowVirtualNetworkAccess: true
     allowForwardedTraffic: true

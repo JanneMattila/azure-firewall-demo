@@ -1,3 +1,6 @@
+[CmdletBinding(
+    SupportsShouldProcess
+)]
 Param (
     [Parameter(HelpMessage = "Deployment target resource group")] 
     [string] $ResourceGroupName = "rg-azure-firewall-demo",
@@ -43,13 +46,24 @@ $additionalParameters = New-Object -TypeName hashtable
 $additionalParameters['username'] = $Username
 $additionalParameters['password'] = $Password
 
-$result = New-AzResourceGroupDeployment `
-    -DeploymentName $deploymentName `
-    -ResourceGroupName $ResourceGroupName `
-    -TemplateFile $Template `
-    -TemplateParameterFile $TemplateParameters `
-    @additionalParameters `
-    -Mode Complete -Force `
-    -Verbose
+if ($PSCmdlet.ShouldProcess($ResourceGroupName)) {
+    $result = New-AzResourceGroupDeployment `
+        -DeploymentName $deploymentName `
+        -ResourceGroupName $ResourceGroupName `
+        -TemplateFile $Template `
+        -TemplateParameterFile $TemplateParameters `
+        @additionalParameters `
+        -Mode Complete -Force `
+        -Verbose
+}
+else {
+    $result = New-AzResourceGroupDeployment `
+        -WhatIf -WhatIfResultFormat FullResourcePayloads `
+        -ResourceGroupName $ResourceGroupName `
+        -TemplateFile $Template `
+        -TemplateParameterFile $TemplateParameters `
+        @additionalParameters `
+        -Verbose
+}
 
 $result
