@@ -120,8 +120,14 @@ curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
 curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
+BODY=$(echo "HTTP GET \"https://myip.jannemattila.com\"")
+curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
+curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+# Question: What IP addresses you got as responses and why?
+
 # Test outbound vnet-to-vnet using http on port 80
-# Spoke001 -> Spoke002, Spoke003 - Both OK
+# Spoke001 -> Spoke002 and Spoke001 -> Spoke003 - Both OK
 curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke1/api/commands" # OK
 curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke1/api/commands" # OK
 

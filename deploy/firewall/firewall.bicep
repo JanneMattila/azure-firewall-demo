@@ -13,7 +13,7 @@ param skuName string = 'AZFW_VNet'
 param skuTier string = 'Standard'
 param location string = resourceGroup().location
 
-resource firewall 'Microsoft.Network/azureFirewalls@2020-11-01' = {
+resource firewall 'Microsoft.Network/azureFirewalls@2023-09-01' = {
   name: name
   location: location
   zones: [

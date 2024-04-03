@@ -37,6 +37,23 @@ resource spokesRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
           }
           {
             ruleType: 'ApplicationRule'
+            name: 'Spoke001 to *.jannemattila.com'
+            description: 'Allow spoke001 to connect to *.jannemattila.com'
+            sourceAddresses: [
+              '10.1.0.0/22' // spoke001
+            ]
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
+            targetFqdns: [
+              '*.jannemattila.com'
+            ]
+          }
+          {
+            ruleType: 'ApplicationRule'
             name: 'Spoke001 to learn.microsoft.com'
             description: 'Allow spoke001 to connect to learn.microsoft.com'
             sourceAddresses: [
