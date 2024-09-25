@@ -10,7 +10,12 @@ resource aci 'Microsoft.ContainerInstance/containerGroups@2023-05-01' = {
       {
         name: 'webapp-network-tester'
         properties: {
-          image: 'jannemattila/webapp-network-tester:latest'
+          // From Docker Hub:
+          // https://hub.docker.com/r/jannemattila/webapp-network-tester
+          // image: 'jannemattila/webapp-network-tester:1.0.76'
+          // However, since ACI is quite frequently failing to pull images from Docker Hub,
+          // I have pushed the image to my Azure Container Registry:
+          image: 'jannemattila.azurecr.io/webapp-network-tester:1.0.76'
           environmentVariables: [
             {
               name: 'ASPNETCORE_HTTP_PORTS'

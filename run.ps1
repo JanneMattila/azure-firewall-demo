@@ -8,12 +8,12 @@
 ##################################
 
 # Remember to update you Azure Az PowerShell module!
-# https://learn.microsoft.com/en-us/powershell/azure/install-az-ps?view=azps-7.0.0
+# https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell?view=azps-12.3.0
 Update-Module Az
 
 # Remember to install Bicep!
 # https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install#azure-powershell
-bicep --version # 0.4.1124 or newer
+bicep --version # 0.30.3 or newer
 
 # Login to Azure
 Login-AzAccount
@@ -30,16 +30,18 @@ $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
 $resourceGroupName = "rg-azure-firewall-demo"
+$location = "swedencentral"
 
 # Run deployment in single command
-$global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName
+$global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName -Location $location
 
 # Run deployment using multi-line command to print the deployment duration (you need to execute all lines)
 Measure-Command -Expression {
     $global:result = .\deploy.ps1 `
         -Username $username `
         -Password $password `
-        -ResourceGroupName $resourceGroupName
+        -ResourceGroupName $resourceGroupName `
+        -Location $location
 } | Format-Table
 
 # Note: If you get deployment errors, then you can see details in either:
