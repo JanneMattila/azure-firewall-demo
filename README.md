@@ -231,3 +231,5 @@ is great blog post and was one inspiration to built this demo.
 further improve way how `ruleCollections` are passed on to the `ruleCollectionGroups`.
 
 [Virtual network traffic routing](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview)
+
+[Organizing rule collections and rule collection groups in Azure Firewall Policy](https://techcommunity.microsoft.com/t5/azure-network-security-blog/organizing-rule-collections-and-rule-collection-groups-in-azure/ba-p/4138881)
