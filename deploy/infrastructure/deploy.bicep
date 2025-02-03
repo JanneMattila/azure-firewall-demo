@@ -27,7 +27,7 @@ var spokes = [
 ]
 
 // All route tables are defined here
-resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2024-05-01' = {
   name: 'rt-${hubName}-gateway'
   location: location
   properties: {
@@ -39,7 +39,6 @@ resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' =
           addressPrefix: spokes[0].vnetAddressSpace
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
       {
@@ -48,7 +47,6 @@ resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' =
           addressPrefix: spokes[1].vnetAddressSpace
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
       {
@@ -57,14 +55,13 @@ resource hubGatewaySubnetRouteTable 'Microsoft.Network/routeTables@2020-11-01' =
           addressPrefix: spokes[2].vnetAddressSpace
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
     ]
   }
 }
 
-resource spoke1RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+resource spoke1RouteTable 'Microsoft.Network/routeTables@2024-05-01' = {
   name: 'rt-${spokes[0].name}-front'
   location: location
   properties: {
@@ -76,14 +73,13 @@ resource spoke1RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
           addressPrefix: all
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
     ]
   }
 }
 
-resource spoke2RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+resource spoke2RouteTable 'Microsoft.Network/routeTables@2024-05-01' = {
   name: 'rt-${spokes[1].name}-front'
   location: location
   properties: {
@@ -95,14 +91,13 @@ resource spoke2RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
           addressPrefix: all
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
     ]
   }
 }
 
-resource spoke3RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
+resource spoke3RouteTable 'Microsoft.Network/routeTables@2024-05-01' = {
   name: 'rt-${spokes[2].name}-front'
   location: location
   properties: {
@@ -114,7 +109,6 @@ resource spoke3RouteTable 'Microsoft.Network/routeTables@2020-11-01' = {
           addressPrefix: spokes[0].vnetAddressSpace
           nextHopType: 'VirtualAppliance'
           nextHopIpAddress: firewallIpAddress
-          hasBgpOverride: false
         }
       }
     ]
@@ -144,21 +138,23 @@ module hub 'hub/deploy.bicep' = {
   }
 }
 
-module spokeDeployments 'spoke/deploy.bicep' = [for (spoke, i) in spokes: {
-  name: '${spoke.name}-deployment'
-  params: {
-    spokeName: spoke.name
-    hubName: hubVNetName
-    hubId: hub.outputs.id
-    location: location
-    vnetAddressSpace: spoke.vnetAddressSpace
-    subnetAddressSpace: spoke.subnetAddressSpace
-    routeTableId: spokeRouteTables[i].id
+module spokeDeployments 'spoke/deploy.bicep' = [
+  for (spoke, i) in spokes: {
+    name: '${spoke.name}-deployment'
+    params: {
+      spokeName: spoke.name
+      hubName: hubVNetName
+      hubId: hub.outputs.id
+      location: location
+      vnetAddressSpace: spoke.vnetAddressSpace
+      subnetAddressSpace: spoke.subnetAddressSpace
+      routeTableId: spokeRouteTables[i].id
+    }
+    dependsOn: [
+      hub
+    ]
   }
-  dependsOn: [
-    hub
-  ]
-}]
+]
 
 output firewallSubnetId string = hub.outputs.firewallSubnetId
 output bastionName string = hub.outputs.bastionName

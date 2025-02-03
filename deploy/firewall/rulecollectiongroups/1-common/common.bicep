@@ -34,6 +34,7 @@ resource commonRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleColle
             destinationAddresses: []
             destinationIpGroups: []
             destinationFqdns: [
+              'azkms.${environment().suffixes.storage}'
               'kms.${environment().suffixes.storage}'
             ]
             destinationPorts: [
