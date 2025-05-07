@@ -70,8 +70,8 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke001 to github.com'
-            description: 'Allow spoke001 to connect to github.com'
+            name: 'Spoke001 to dotnet.microsoft.com'
+            description: 'Allow spoke001 to connect to dotnet.microsoft.com'
             sourceAddresses: [
               '10.1.0.0/22' // spoke001
             ]
@@ -82,13 +82,13 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
               }
             ]
             targetFqdns: [
-              'github.com'
+              'dotnet.microsoft.com'
             ]
           }
           {
             ruleType: 'ApplicationRule'
-            name: 'All vnets to www.microsoft.com'
-            description: 'Allow vnets to connect to www.microsoft.com'
+            name: 'All vnets to portal.azure.com'
+            description: 'Allow vnets to connect to portal.azure.com'
             sourceAddresses: [
               '*'
             ]
@@ -99,7 +99,7 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
               }
             ]
             targetFqdns: [
-              'www.microsoft.com'
+              'portal.azure.com'
             ]
           }
         ]

@@ -2,7 +2,7 @@
 
 Azure Firewall demo enables you quickly deploy following environment:
 
-![Azure Firewall Demo architecture](https://user-images.githubusercontent.com/2357647/148061479-7626496e-4bbe-4974-ad36-c3df54fb1eda.png)
+![Azure Firewall Demo architecture](https://github.com/user-attachments/assets/d7c2a375-24a9-4f81-a8bc-c65193ccc612)
 
 These demo repo is closely related to [JanneMattila/azure-firewall-and-network-testing](https://github.com/JanneMattila/azure-firewall-and-network-testing) which is test bed for validating your firewall rules to match
 the networking requirements of different Azure services.
@@ -94,7 +94,7 @@ Using this method you can test if your rules work as expected.
 
 Here is diagram that illustrates the testing flow using `webapp-network-tester` in our demo architecture:
 
-![Request flow in our architecture](https://user-images.githubusercontent.com/2357647/148060299-9fb70956-cf56-46e4-a389-a36ff87b9b13.png)
+![Request flow in our architecture](https://github.com/user-attachments/assets/f59dd0fc-3ac0-4a26-92c7-e96b0d714673)
 
 If we look that same in sequence diagrams, we can see the overall process like this:
 
@@ -113,13 +113,13 @@ And then the end-to-end test scenario like this:
 #### All spoke networks
 
 - Internet access via firewall
-  - `www.microsoft.com` is allowed
+  - `portal.azure.com` is allowed
 
 #### Spoke001
 
 - All traffic is routed to firewall
 - Internet access via firewall
-  - `github.com`
+  - `dotnet.microsoft.com`
   - `bing.com`
   - `learn.microsoft.com`
 - VNet accesses
@@ -131,7 +131,7 @@ And then the end-to-end test scenario like this:
 
 - All traffic is routed to firewall
 - Internet access via firewall
-  - `github.com`
+  - `dotnet.microsoft.com`
 - VNet accesses
   - Full access to spoke001
   - No access to spoke003
@@ -175,18 +175,18 @@ see how it's used.
 <summary>Hint to get you started...</summary>
 
 Open `firewall/3-vnet/deploy.bicep` and look for `Allow-VNET-To-Internet-Application-Rules`
-rule collection. It already contains rule for `github.com` as example.
+rule collection. It already contains rule for `dotnet.microsoft.com` as example.
 
 </details>
 
 #### Find firewall logs
 
-- ACI communicating with `wwww.bing.com` running inside `spoke001` vnet
+- VM communicating with `wwww.bing.com` running inside `spoke001` vnet
 
 <details>
 <summary>Hint to get you started...</summary>
 
-Use IP address of ACI `10.1.0.4` and then target address in your `AZFWApplicationRule` query.
+Use IP address of VM `10.1.0.4` and then target address in your `AZFWApplicationRule` query.
 
 </details>
 

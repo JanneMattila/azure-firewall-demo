@@ -53,7 +53,7 @@ if ($PSCmdlet.ShouldProcess($ResourceGroupName)) {
         -TemplateFile $Template `
         -TemplateParameterFile $TemplateParameters `
         @additionalParameters `
-        -Mode Complete -Force `
+        -Force `
         -Verbose
 }
 else {

@@ -25,12 +25,15 @@ Select-AzSubscription -Subscription "<YourSubscriptionName>"
 Set-Location .\deploy\
 # To understand the demo structure better, see tree of directories
 tree
-$username = "jumpboxuser"
+$username = "demouser"
 $plainTextPassword = (New-Guid).ToString() + (New-Guid).ToString().ToUpper()
 $plainTextPassword
 $password = ConvertTo-SecureString -String $plainTextPassword -AsPlainText
 $resourceGroupName = "rg-azure-firewall-demo"
 $location = "swedencentral"
+
+# If you want to store password to .env, you can run this
+$plainTextPassword > .env
 
 # Run deployment in single command
 $global:result = .\deploy.ps1 -Username $username -Password $password -ResourceGroupName $resourceGroupName -Location $location
@@ -49,14 +52,17 @@ Measure-Command -Expression {
 # - Resource Group -> Deployments
 
 $bastion = $result.Outputs.bastionName.value
-$virtualMachineResourceId = $result.Outputs.virtualMachineResourceId.value
+$jumpboxVirtualMachineResourceId = $result.Outputs.virtualMachineResourceId.value
+$spoke1VirtualMachineResourceId = $result.Outputs.spoke1VirtualMachineResourceId.value
+$spoke2VirtualMachineResourceId = $result.Outputs.spoke2VirtualMachineResourceId.value
+$spoke3VirtualMachineResourceId = $result.Outputs.spoke3VirtualMachineResourceId.value
 
 $bastion
-$virtualMachineResourceId
+$jumpboxVirtualMachineResourceId
 
 # Few notes about deployment:
 # - Same deployment can be executed in pipeline
-#   by Azure AD Service Principal
+#   by Entra ID Service Principal or Managed Identity
 # - You can deploy this to multiple resources groups
 #   - This is extremely handy since deleting also takes time
 # - Initial deployment takes roughly 30 minutes
@@ -86,28 +92,32 @@ az extension add --upgrade --yes --name ssh
 az network bastion ssh `
     --name $bastion `
     --resource-group $resourceGroupName `
-    --target-resource-id $virtualMachineResourceId `
+    --target-resource-id $jumpboxVirtualMachineResourceId `
     --username $username `
     --auth-type password
+
+# End of this file you can find examples:
+# - How to connect to spoke VMs
+# - How to show effective routes
 
 # Now you can execute commands from our jumpbox
 spoke1="http://10.1.0.4"
 spoke2="http://10.2.0.4"
 spoke3="http://10.3.0.4"
 curl $spoke1
-# -> <html><body>Hello
+# -> Hello there!
 curl $spoke2
-# -> <html><body>Hello
+# -> Hello there!
 curl $spoke3
-# -> <html><body>Hello
+# -> Hello there!
 
 # Test outbound internet accesses
-BODY=$(echo "HTTP GET \"https://github.com\"")
+BODY=$(echo "HTTP GET \"https://dotnet.microsoft.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
 curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
-BODY=$(echo "HTTP GET \"https://www.microsoft.com\"")
+BODY=$(echo "HTTP GET \"https://portal.azure.com\"")
 curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke2/api/commands" # OK (via firewall)
 curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
@@ -129,12 +139,14 @@ curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 # Question: What IP addresses you got as responses and why?
 
 # Test outbound vnet-to-vnet using http on port 80
-# Spoke001 -> Spoke002 and Spoke001 -> Spoke003 - Both OK
+# Spoke001 -> Spoke002
 curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke1/api/commands" # OK
+# Spoke001 -> Spoke003
 curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke1/api/commands" # OK
 
-# Spoke002 -> Spoke001 OK but, Spoke003 is denied by firewall
+# Spoke002 -> Spoke001
 curl -X POST --data  "HTTP GET \"$spoke1\"" "$spoke2/api/commands" # OK
+# Spoke002 -> Spoke003 is denied by firewall
 curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke2/api/commands" # Deny
 
 # Spoke003 -> Spoke001 is denied by firewall
@@ -145,8 +157,40 @@ curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke3/api/commands" # Timeout
 # Exit ssh (our jumpbox)
 exit
 
-# https://learn.microsoft.com/en-us/powershell/module/az.compute/get-azvmruncommand?view=azps-7.0.0
-# Get-AzVMRunCommand
+# Connect to spoke VMs
+$plainTextPassword | clip
+
+# Connect to spoke1 VM (Windows & RDP)
+az network bastion rdp `
+    --name $bastion `
+    --resource-group $resourceGroupName `
+    --target-resource-id $spoke1VirtualMachineResourceId
+
+# Connect to spoke2 VM (Linux & SSH)
+az network bastion ssh `
+    --name $bastion `
+    --resource-group $resourceGroupName `
+    --target-resource-id $spoke2VirtualMachineResourceId `
+    --username $username `
+    --auth-type password
+
+# Connect to spoke3 VM (Linux & SSH)
+az network bastion ssh `
+    --name $bastion `
+    --resource-group $resourceGroupName `
+    --target-resource-id $spoke3VirtualMachineResourceId `
+    --username $username `
+    --auth-type password
+
+# Show effective routes for each spoke VM
+Get-AzEffectiveRouteTable -NetworkInterfaceName "nic-spoke001" -ResourceGroupName $resourceGroupName `
+| Format-Table -Property AddressPrefix, NextHopType, NextHopIpAddress, DisableBgpRoutePropagation, Name, Source, State
+
+Get-AzEffectiveRouteTable -NetworkInterfaceName "nic-spoke002" -ResourceGroupName $resourceGroupName `
+| Format-Table -Property AddressPrefix, NextHopType, NextHopIpAddress, DisableBgpRoutePropagation, Name, Source, State
+
+Get-AzEffectiveRouteTable -NetworkInterfaceName "nic-spoke003" -ResourceGroupName $resourceGroupName `
+| Format-Table -Property AddressPrefix, NextHopType, NextHopIpAddress, DisableBgpRoutePropagation, Name, Source, State
 
 ##################################
 #   ____ _

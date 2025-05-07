@@ -4,6 +4,11 @@ param subnetAddressSpace string
 param hubName string
 param hubId string
 param routeTableId string
+param privateIPAddress string
+param imageReference object
+param username string
+@secure()
+param password string
 param location string = resourceGroup().location
 
 var vnetName = 'vnet-${spokeName}'
@@ -55,12 +60,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
             id: networkSecurityGroup.id
           }
           delegations: [
-            {
-              name: 'ACIDelegation'
-              properties: {
-                serviceName: 'Microsoft.ContainerInstance/containerGroups'
-              }
-            }
+            // Uncomment the following lines to deploy an Azure Container Instance instead of a Virtual Machine
+            // {
+            //   name: 'ACIDelegation'
+            //   properties: {
+            //     serviceName: 'Microsoft.ContainerInstance/containerGroups'
+            //   }
+            // }
           ]
         }
       }
@@ -68,12 +74,26 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-module aci 'container-instances.bicep' = {
-  name: '${spokeName}-aci-deployment'
+// Uncomment the following lines to deploy an Azure Container Instance instead of a Virtual Machine
+// module aci 'container-instances.bicep' = {
+//   name: '${spokeName}-aci-deployment'
+//   params: {
+//     name: 'ci-${spokeName}'
+//     location: location
+//     subnetId: virtualNetwork.properties.subnets[0].id
+//   }
+// }
+
+module vm 'vm.bicep' = {
+  name: 'vm-${spokeName}-deployment'
   params: {
-    name: 'ci-${spokeName}'
+    name: spokeName
     location: location
+    privateIPAddress: privateIPAddress
     subnetId: virtualNetwork.properties.subnets[0].id
+    imageReference: imageReference
+    username: username
+    password: password
   }
 }
 
@@ -102,4 +122,5 @@ resource HubToSpokePeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeer
 }
 
 output id string = virtualNetwork.id
+output vmResourceId string = vm.outputs.vmResourceId
 output subnetId string = virtualNetwork.properties.subnets[0].id

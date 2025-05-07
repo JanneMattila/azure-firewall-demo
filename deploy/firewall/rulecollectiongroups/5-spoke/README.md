@@ -15,7 +15,7 @@ to identifiers used in firewall in [here](spokes.md).
 
 - UDR: 0.0.0.0 -> Firewall Private IP
 - Internet access via firewall
-  - `github.com`
+  - `dotnet.microsoft.com`
   - `bing.com`
   - `learn.microsoft.com`
 - VNet accesses
@@ -27,7 +27,7 @@ to identifiers used in firewall in [here](spokes.md).
 
 - UDR: 0.0.0.0 -> Firewall Private IP
 - Internet access via firewall
-  - `github.com`
+  - `dotnet.microsoft.com`
 - VNet accesses
   - Full access to spoke001
   - No access to spoke003
@@ -37,7 +37,7 @@ to identifiers used in firewall in [here](spokes.md).
 
 - UDR: Spoke001 address space -> Firewall Private IP
 - Internet access via firewall
-  - `github.com`
+  - `dotnet.microsoft.com`
 - VNet accesses
   - Full access to spoke001
   - No access to spoke002
