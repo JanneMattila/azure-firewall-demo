@@ -2,7 +2,7 @@
 
 Azure Firewall demo enables you quickly deploy following environment:
 
-![Azure Firewall Demo architecture](https://github.com/user-attachments/assets/d7c2a375-24a9-4f81-a8bc-c65193ccc612)
+![Azure Firewall Demo architecture](https://github.com/user-attachments/assets/b045f5fc-b202-47fa-a55a-cc78a6c7c80a)
 
 These demo repo is closely related to [JanneMattila/azure-firewall-and-network-testing](https://github.com/JanneMattila/azure-firewall-and-network-testing) which is test bed for validating your firewall rules to match
 the networking requirements of different Azure services.

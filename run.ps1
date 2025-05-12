@@ -56,6 +56,9 @@ $jumpboxVirtualMachineResourceId = $result.Outputs.virtualMachineResourceId.valu
 $spoke1VirtualMachineResourceId = $result.Outputs.spoke1VirtualMachineResourceId.value
 $spoke2VirtualMachineResourceId = $result.Outputs.spoke2VirtualMachineResourceId.value
 $spoke3VirtualMachineResourceId = $result.Outputs.spoke3VirtualMachineResourceId.value
+$storage = $result.Outputs.storage.value
+$storageConnectionString = $result.Outputs.storageConnectionString.value
+$logAnalyticsWorkspaceCustomerId = $result.Outputs.logAnalyticsWorkspaceCustomerId.value
 
 $bastion
 $jumpboxVirtualMachineResourceId
@@ -84,6 +87,12 @@ $username | clip
 $plainTextPassword
 $plainTextPassword | clip
 
+# Print out the following information so that you can copy-paste it to your jumpbox
+@"
+storage=$storage
+storageConnectionString='$storageConnectionString'
+"@
+
 # Connect to a VM using Bastion and the native client on your Windows computer
 # https://learn.microsoft.com/en-us/azure/bastion/connect-native-client-windows
 az login -o none
@@ -104,6 +113,8 @@ az network bastion ssh `
 spoke1="http://10.1.0.4"
 spoke2="http://10.2.0.4"
 spoke3="http://10.3.0.4"
+# Remember to paste storage related variables
+
 curl $spoke1
 # -> Hello there!
 curl $spoke2
@@ -113,46 +124,62 @@ curl $spoke3
 
 # Test outbound internet accesses
 BODY=$(echo "HTTP GET \"https://dotnet.microsoft.com\"")
-curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke2/api/commands" # Deny
+curl --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://portal.azure.com\"")
-curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke2/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke2/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://www.bing.com\"")
-curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke2/api/commands" # Deny
+curl --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://learn.microsoft.com\"")
-curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke2/api/commands" # Deny
+curl --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 
 BODY=$(echo "HTTP GET \"https://myip.jannemattila.com\"")
-curl -X POST --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
-curl -X POST --data "$BODY" "$spoke2/api/commands" # Deny
-curl -X POST --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
+curl --data "$BODY" "$spoke1/api/commands" # OK (via firewall)
+curl --data "$BODY" "$spoke2/api/commands" # Deny
+curl --data "$BODY" "$spoke3/api/commands" # OK (due to routing)
 # Question: What IP addresses you got as responses and why?
 
 # Test outbound vnet-to-vnet using http on port 80
 # Spoke001 -> Spoke002
-curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke1/api/commands" # OK
+curl --data "HTTP GET \"$spoke2\"" "$spoke1/api/commands" # OK
 # Spoke001 -> Spoke003
-curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke1/api/commands" # OK
+curl --data "HTTP GET \"$spoke3\"" "$spoke1/api/commands" # OK
 
 # Spoke002 -> Spoke001
-curl -X POST --data  "HTTP GET \"$spoke1\"" "$spoke2/api/commands" # OK
+curl --data "HTTP GET \"$spoke1\"" "$spoke2/api/commands" # OK
 # Spoke002 -> Spoke003 is denied by firewall
-curl -X POST --data  "HTTP GET \"$spoke3\"" "$spoke2/api/commands" # Deny
+curl --data "HTTP GET \"$spoke3\"" "$spoke2/api/commands" # Deny
 
 # Spoke003 -> Spoke001 is denied by firewall
-curl -X POST --data  "HTTP GET \"$spoke1\"" "$spoke3/api/commands" # Deny
+curl --data "HTTP GET \"$spoke1\"" "$spoke3/api/commands" # Deny
 # Spoke003 -> Spoke002 timeouts, because there is no route and you cannot reach the target server
-curl -X POST --data  "HTTP GET \"$spoke2\"" "$spoke3/api/commands" # Timeout
+curl --data "HTTP GET \"$spoke2\"" "$spoke3/api/commands" # Timeout
+
+# Test DNS resolution for our storage
+nslookup $storage.blob.core.windows.net # 10.1.0.5
+curl --data "IPLOOKUP $storage.blob.core.windows.net" "$spoke1/api/commands" # 10.1.0.5
+curl --data "IPLOOKUP $storage.blob.core.windows.net" "$spoke2/api/commands" # 10.1.0.5
+curl --data "IPLOOKUP $storage.blob.core.windows.net" "$spoke3/api/commands" # 10.1.0.5
+
+# Test blob storage private access
+curl --data-urlencode "BLOB SET hello file.csv containers1 $storageConnectionString" "$spoke1/api/commands" # OK
+curl --data-urlencode "BLOB GET file.csv containers1 \"$storageConnectionString\"" "$spoke1/api/commands" # OK
+
+curl --data-urlencode "BLOB SET hello2 file.csv containers1 $storageConnectionString" "$spoke2/api/commands" # OK
+curl --data-urlencode "BLOB GET file.csv containers1 \"$storageConnectionString\"" "$spoke2/api/commands" # OK
+
+curl --data-urlencode "BLOB SET hello3 file.csv containers1 $storageConnectionString" "$spoke3/api/commands" # Deny (timeout)
+curl --data-urlencode "BLOB GET file.csv containers1 \"$storageConnectionString\"" "$spoke3/api/commands" # Deny (timeout)
 
 # Exit ssh (our jumpbox)
 exit
@@ -191,6 +218,54 @@ Get-AzEffectiveRouteTable -NetworkInterfaceName "nic-spoke002" -ResourceGroupNam
 
 Get-AzEffectiveRouteTable -NetworkInterfaceName "nic-spoke003" -ResourceGroupName $resourceGroupName `
 | Format-Table -Property AddressPrefix, NextHopType, NextHopIpAddress, DisableBgpRoutePropagation, Name, Source, State
+
+#########################
+#  _  __   ___    _
+# | |/ /  / _ \  | |
+# | ' /  | | | | | |
+# | . \  | |_| | | |___
+# |_|\_\  \__\_\ |_____|
+#########################
+# See the all available tables
+# https://learn.microsoft.com/en-us/azure/azure-monitor/reference/tables/microsoft-network_azurefirewalls
+
+# Search spoke 1 firewall logs
+$query = @"
+AZFWNetworkRule
+| union AZFWApplicationRule, AZFWNatRule, AZFWThreatIntel, AZFWIdpsSignature
+| where SourceIp == "10.1.0.4"
+"@
+
+# Search spoke 2 firewall logs
+$query = @"
+AZFWNetworkRule
+| union AZFWApplicationRule, AZFWNatRule, AZFWThreatIntel, AZFWIdpsSignature
+| where SourceIp == "10.2.0.4"
+"@
+
+# Search spoke 2 to private endpoint firewall logs
+$query = @"
+AZFWNetworkRule
+| union AZFWApplicationRule, AZFWNatRule, AZFWThreatIntel, AZFWIdpsSignature
+| where SourceIp == "10.2.0.4"
+"@
+
+# Search spoke 3 firewall logs
+$query = @"
+AZFWNetworkRule
+| union AZFWApplicationRule, AZFWNatRule, AZFWThreatIntel, AZFWIdpsSignature
+| where SourceIp == "10.3.0.4"
+"@
+
+# Search DNS proxy logs
+$query = @"
+AZFWDnsQuery
+"@
+
+(Invoke-AzOperationalInsightsQuery `
+  -WorkspaceId $logAnalyticsWorkspaceCustomerId `
+  -Timespan (New-TimeSpan -Hours 4) `
+  -Query $query).Results | Format-Table
 
 ##################################
 #   ____ _

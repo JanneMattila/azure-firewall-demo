@@ -178,17 +178,25 @@ module spokeDeployments 'infrastructure/spoke/deploy.bicep' = [
       location: location
       vnetAddressSpace: spoke.vnetAddressSpace
       subnetAddressSpace: spoke.subnetAddressSpace
+      firewallIpAddress: firewall.outputs.firewallPrivateIp
       routeTableId: spokeRouteTables[i].id
       privateIPAddress: spoke.privateIPAddress
       imageReference: spoke.imageReference
       username: username
       password: password
     }
-    dependsOn: [
-      firewall
-    ]
   }
 ]
+
+module storage 'storage.bicep' = {
+  name: 'storage-deployment'
+  params: {
+    storageAccountName: 'stspoke001${uniqueString(resourceGroup().id)}'
+    vnetId: hub.outputs.id
+    privateEndpointSubnetId: spokeDeployments[0].outputs.subnetId
+    location: location
+  }
+}
 
 output firewallPrivateIp string = firewall.outputs.firewallPrivateIp
 output firewallSubnetId string = hub.outputs.firewallSubnetId
@@ -197,3 +205,6 @@ output virtualMachineResourceId string = hub.outputs.virtualMachineResourceId
 output spoke1VirtualMachineResourceId string = spokeDeployments[0].outputs.vmResourceId
 output spoke2VirtualMachineResourceId string = spokeDeployments[1].outputs.vmResourceId
 output spoke3VirtualMachineResourceId string = spokeDeployments[2].outputs.vmResourceId
+output storage string = storage.outputs.storage
+output storageConnectionString string = storage.outputs.storageConnectionString
+output logAnalyticsWorkspaceCustomerId string = firewall.outputs.logAnalyticsWorkspaceCustomerId

@@ -69,3 +69,5 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2017-05-01-pr
     ]
   }
 }
+
+output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.properties.customerId

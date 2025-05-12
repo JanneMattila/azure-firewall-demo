@@ -59,3 +59,4 @@ module diagnosticSettings 'log-analytics.bicep' = {
 }
 
 output privateIPAddress string = firewall.properties.ipConfigurations[0].properties.privateIPAddress
+output logAnalyticsWorkspaceCustomerId string = diagnosticSettings.outputs.logAnalyticsWorkspaceCustomerId

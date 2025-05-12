@@ -1,6 +1,7 @@
 param spokeName string
 param vnetAddressSpace string
 param subnetAddressSpace string
+param firewallIpAddress string
 param hubName string
 param hubId string
 param routeTableId string
@@ -36,13 +37,18 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2019-11-0
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: vnetName
   location: location
   tags: {
     'azfw-mapping': spokeName
   }
   properties: {
+    dhcpOptions: {
+      dnsServers: [
+        firewallIpAddress
+      ]
+    }
     addressSpace: {
       addressPrefixes: [
         vnetAddressSpace
@@ -68,6 +74,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
             //   }
             // }
           ]
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]

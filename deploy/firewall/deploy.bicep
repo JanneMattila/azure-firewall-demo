@@ -35,3 +35,4 @@ module firewall 'firewall.bicep' = {
 }
 
 output firewallPrivateIp string = firewall.outputs.privateIPAddress
+output logAnalyticsWorkspaceCustomerId string = firewall.outputs.logAnalyticsWorkspaceCustomerId

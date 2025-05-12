@@ -114,7 +114,7 @@ resource vnetRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollect
         rules: [
           {
             ruleType: 'ApplicationRule'
-            name: 'Spoke001 to spoke003 ACI using http'
+            name: 'Spoke001 to spoke003 http'
             description: 'Allow spoke001 to connect to Azure Container Instance deployed to spoke003 using http on port 80'
             sourceAddresses: [
               '10.1.0.0/22' // spoke001
